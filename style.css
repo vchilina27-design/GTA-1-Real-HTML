@@ -145,8 +145,8 @@ body {
     color: #ffd700;
 }
 
-#hidden {
-    display: none;
+.hidden {
+    display: none !important;
 }
 
 .pause-btn {
