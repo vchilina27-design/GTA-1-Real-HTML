@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GTA 1 Real - HTML5 Game</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="game-container">
+        <div id="menu">
+            <h1>GTA 1 Real</h1>
+            <h2>Шутер-стрелялка</h2>
+            <div class="menu-buttons">
+                <button id="start-btn" class="menu-btn">Начать игру</button>
+                <button id="instructions-btn" class="menu-btn">Инструкции</button>
+                <button id="about-btn" class="menu-btn">О игре</button>
+            </div>
+        </div>
+        
+        <div id="instructions" class="hidden">
+            <h2>Инструкции</h2>
+            <p><strong>Управление:</strong></p>
+            <ul>
+                <li><strong>W, A, S, D</strong> или <strong>Стрелки</strong> - движение</li>
+                <li><strong>Пробел</strong> - стрельба</li>
+                <li><strong>Mouse</strong> - поворот и цель</li>
+            </ul>
+            <p><strong>Цель:</strong> Выживите, уничтожите врагов, заработайте деньги!Не попадайтесь под пули!</p>
+            <button id="back-btn" class="menu-btn">Назад</button>
+        </div>
+        
+        <div id="about" class="hidden">
+            <h2>О игре</h2>
+            <p>Это игра в стиле GTA 1, созданная на HTML5, CSS3 и JavaScript.</p>
+            <p>Используйте все возможности современного браузера для игры в стиле классической вида сверху!</p>
+            <p><strong>Версия:</strong> 1.0.0</p>
+            <button id="back-about-btn" class="menu-btn">Назад</button>
+        </div>
+        
+        <div id="game" class="hidden">
+            <div id="hud">
+                <div id="health">
+                    <span>❤️ Здоровье: </span>
+                    <div id="health-bar">
+                        <div id="health-fill"></div>
+                    </div>
+                </div>
+                <div id="score">💰 Ockore: 0</div>
+                <div id="ammo">🔊 Патроны: 30</div>
+                <button id="pause-btn" class="pause-btn">Пауза</button>
+            </div>
+            <canvas id="gameCanvas"></canvas>
+        </div>
+        
+        <div id="game-over" class="hidden">
+            <h2>Игра завершена!</h2>
+            <p>Ваш результат: <span id="final-score">0</span></p>
+            <button id="restart-btn" class="menu-btn">Играть снова</button>
+            <button id="main-menu-btn" class="menu-btn">Главное меню</button>
+        </div>
+    </div>
+    
+    <script src="game.js"></script>
+</body>
+</html>
