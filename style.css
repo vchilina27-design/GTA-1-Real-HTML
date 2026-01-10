@@ -189,3 +189,135 @@ body {
     font-weight: bold;
     font-size: 32px;
 }
+
+/* Mobile Controls */
+.mobile-only {
+    display: none !important;
+}
+
+.is-mobile .mobile-only {
+    display: block !important;
+}
+
+#mobile-controls {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 200px;
+    z-index: 200;
+    pointer-events: none;
+}
+
+#dpad {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    pointer-events: auto;
+}
+
+.dpad-btn {
+    width: 60px;
+    height: 60px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.3);
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    color: #fff;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
+    transition: all 0.1s;
+}
+
+.dpad-btn:active,
+.dpad-btn.pressed {
+    background: rgba(255, 215, 0, 0.5);
+    border-color: #ffd700;
+    transform: scale(0.95);
+}
+
+.dpad-row {
+    display: flex;
+    gap: 5px;
+    margin-top: 5px;
+}
+
+#aim-area {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 60%;
+    height: 200px;
+    pointer-events: auto;
+}
+
+#fire-btn {
+    position: absolute;
+    bottom: 40px;
+    right: 30px;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: rgba(255, 0, 0, 0.4);
+    border: 3px solid rgba(255, 255, 255, 0.6);
+    color: #fff;
+    font-size: 32px;
+    cursor: pointer;
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
+    transition: all 0.1s;
+    box-shadow: 0 0 20px rgba(255, 0, 0, 0.3);
+}
+
+#fire-btn:active,
+#fire-btn.pressed {
+    background: rgba(255, 0, 0, 0.7);
+    transform: scale(0.95);
+    box-shadow: 0 0 30px rgba(255, 0, 0, 0.5);
+}
+
+/* Touch HUD adjustments */
+.is-mobile #hud {
+    flex-wrap: wrap;
+    gap: 10px;
+    font-size: 16px;
+}
+
+.is-mobile #health-bar {
+    width: 120px;
+    height: 20px;
+}
+
+.is-mobile .pause-btn {
+    padding: 8px 15px;
+    font-size: 14px;
+}
+
+/* Landscape mobile optimization */
+@media (orientation: landscape) and (max-height: 500px) {
+    #mobile-controls {
+        height: 120px;
+    }
+
+    .dpad-btn {
+        width: 50px;
+        height: 50px;
+        font-size: 20px;
+    }
+
+    #fire-btn {
+        width: 60px;
+        height: 60px;
+        font-size: 24px;
+        bottom: 20px;
+        right: 20px;
+    }
+
+    #aim-area {
+        height: 120px;
+    }
+}
