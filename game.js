@@ -23,8 +23,23 @@ class Game {
         this.score = 0;
         this.lastTime = 0;
         
+        // Mobile control state
+        this.isMobile = this.detectMobile();
+        this.touchAim = { x: 0, y: 0, active: false };
+        this.touchFire = false;
+        
+        if (this.isMobile) {
+            document.body.classList.add('is-mobile');
+        }
+        
         this.setupEventListeners();
         this.createMapSelector();
+    }
+    
+    detectMobile() {
+        const ua = navigator.userAgent || navigator.vendor || window.opera;
+        return /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(ua) ||
+               (window.innerWidth <= 768 && 'ontouchstart' in window);
     }
     
     setupCanvas() {
@@ -95,6 +110,155 @@ class Game {
                 this.player.shoot();
             }
         });
+        
+        // Touch/Mobile Controls Setup
+        this.setupMobileControls();
+    }
+    
+    setupMobileControls() {
+        if (!this.isMobile) return;
+        
+        const dpadUp = document.getElementById('dpad-up');
+        const dpadDown = document.getElementById('dpad-down');
+        const dpadLeft = document.getElementById('dpad-left');
+        const dpadRight = document.getElementById('dpad-right');
+        const fireBtn = document.getElementById('fire-btn');
+        const aimArea = document.getElementById('aim-area');
+        
+        // D-pad touch handlers
+        const handleDpadTouch = (dir, element, isPressed) => {
+            element.classList.toggle('pressed', isPressed);
+            if (dir === 'up') this.keys['KeyW'] = isPressed;
+            if (dir === 'down') this.keys['KeyS'] = isPressed;
+            if (dir === 'left') this.keys['KeyA'] = isPressed;
+            if (dir === 'right') this.keys['KeyD'] = isPressed;
+        };
+        
+        // Up button
+        dpadUp.addEventListener('touchstart', (e) => { e.preventDefault(); handleDpadTouch('up', dpadUp, true); });
+        dpadUp.addEventListener('touchend', (e) => { e.preventDefault(); handleDpadTouch('up', dpadUp, false); });
+        dpadUp.addEventListener('mousedown', () => handleDpadTouch('up', dpadUp, true));
+        dpadUp.addEventListener('mouseup', () => handleDpadTouch('up', dpadUp, false));
+        dpadUp.addEventListener('mouseleave', () => handleDpadTouch('up', dpadUp, false));
+        
+        // Down button
+        dpadDown.addEventListener('touchstart', (e) => { e.preventDefault(); handleDpadTouch('down', dpadDown, true); });
+        dpadDown.addEventListener('touchend', (e) => { e.preventDefault(); handleDpadTouch('down', dpadDown, false); });
+        dpadDown.addEventListener('mousedown', () => handleDpadTouch('down', dpadDown, true));
+        dpadDown.addEventListener('mouseup', () => handleDpadTouch('down', dpadDown, false));
+        dpadDown.addEventListener('mouseleave', () => handleDpadTouch('down', dpadDown, false));
+        
+        // Left button
+        dpadLeft.addEventListener('touchstart', (e) => { e.preventDefault(); handleDpadTouch('left', dpadLeft, true); });
+        dpadLeft.addEventListener('touchend', (e) => { e.preventDefault(); handleDpadTouch('left', dpadLeft, false); });
+        dpadLeft.addEventListener('mousedown', () => handleDpadTouch('left', dpadLeft, true));
+        dpadLeft.addEventListener('mouseup', () => handleDpadTouch('left', dpadLeft, false));
+        dpadLeft.addEventListener('mouseleave', () => handleDpadTouch('left', dpadLeft, false));
+        
+        // Right button
+        dpadRight.addEventListener('touchstart', (e) => { e.preventDefault(); handleDpadTouch('right', dpadRight, true); });
+        dpadRight.addEventListener('touchend', (e) => { e.preventDefault(); handleDpadTouch('right', dpadRight, false); });
+        dpadRight.addEventListener('mousedown', () => handleDpadTouch('right', dpadRight, true));
+        dpadRight.addEventListener('mouseup', () => handleDpadTouch('right', dpadRight, false));
+        dpadRight.addEventListener('mouseleave', () => handleDpadTouch('right', dpadRight, false));
+        
+        // Fire button
+        const handleFire = (isPressed) => {
+            fireBtn.classList.toggle('pressed', isPressed);
+            this.touchFire = isPressed;
+            if (isPressed && this.state === 'playing' && !this.paused && this.player) {
+                this.player.shoot();
+            }
+        };
+        
+        fireBtn.addEventListener('touchstart', (e) => { e.preventDefault(); handleFire(true); });
+        fireBtn.addEventListener('touchend', (e) => { e.preventDefault(); handleFire(false); });
+        fireBtn.addEventListener('mousedown', () => handleFire(true));
+        fireBtn.addEventListener('mouseup', () => handleFire(false));
+        fireBtn.addEventListener('mouseleave', () => handleFire(false));
+        
+        // Aim area touch tracking
+        const handleAimMove = (e) => {
+            if (this.state !== 'playing' || this.paused) return;
+            
+            const touch = e.touches ? e.touches[0] : e;
+            const rect = aimArea.getBoundingClientRect();
+            const x = touch.clientX - rect.left;
+            const y = touch.clientY - rect.top;
+            
+            this.touchAim.x = x;
+            this.touchAim.y = y;
+            this.touchAim.active = true;
+            
+            // Update mouse position for aiming
+            this.mouse.x = x;
+            this.mouse.y = y;
+            this.mouse.worldX = x + this.camera.x;
+            this.mouse.worldY = y + this.camera.y;
+        };
+        
+        const handleAimEnd = () => {
+            this.touchAim.active = false;
+        };
+        
+        aimArea.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            handleAimMove(e);
+        });
+        
+        aimArea.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            handleAimMove(e);
+        });
+        
+        aimArea.addEventListener('touchend', handleAimEnd);
+        
+        // Also allow aiming by touching the canvas (outside controls)
+        this.canvas.addEventListener('touchstart', (e) => {
+            const rect = this.canvas.getBoundingClientRect();
+            const touch = e.touches[0];
+            const x = touch.clientX - rect.left;
+            const y = touch.clientY - rect.top;
+            
+            // Only track if not touching controls
+            if (x > this.canvas.width * 0.4) {
+                this.touchAim.x = x;
+                this.touchAim.y = y;
+                this.touchAim.active = true;
+                
+                this.mouse.x = x;
+                this.mouse.y = y;
+                this.mouse.worldX = x + this.camera.x;
+                this.mouse.worldY = y + this.camera.y;
+            }
+        });
+        
+        this.canvas.addEventListener('touchmove', (e) => {
+            const rect = this.canvas.getBoundingClientRect();
+            const touch = e.touches[0];
+            const x = touch.clientX - rect.left;
+            const y = touch.clientY - rect.top;
+            
+            this.touchAim.x = x;
+            this.touchAim.y = y;
+            this.touchAim.active = true;
+            
+            this.mouse.x = x;
+            this.mouse.y = y;
+            this.mouse.worldX = x + this.camera.x;
+            this.mouse.worldY = y + this.camera.y;
+        });
+        
+        this.canvas.addEventListener('touchend', () => {
+            this.touchAim.active = false;
+        });
+        
+        // Prevent default touch behaviors on the whole game
+        document.getElementById('game-container').addEventListener('touchmove', (e) => {
+            if (this.state === 'playing') {
+                e.preventDefault();
+            }
+        }, { passive: false });
     }
     
     showScreen(screen) {
