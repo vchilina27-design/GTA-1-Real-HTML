@@ -22,11 +22,20 @@
             <h2>Инструкции</h2>
             <p><strong>Управление:</strong></p>
             <ul>
-                <li><strong>W, A, S, D</strong> или <strong>Стрелки</strong> - движение</li>
-                <li><strong>Пробел</strong> - стрельба</li>
-                <li><strong>Mouse</strong> - поворот и цель</li>
+                <li><strong>W, A, S, D</strong> или <strong>Стрелки</strong> - движение (ПК)</li>
+                <li><strong>Пробел</strong> или <strong>Клик мыши</strong> - стрельба (ПК)</li>
+                <li><strong>Mouse</strong> - поворот и цель (ПК)</li>
+                <li><strong>Мобильные кнопки</strong> - движение (мобильные устройства)</li>
+                <li><strong>Сенсорное прицеливание</strong> - касание экрана (мобильные устройства)</li>
+                <li><strong>Кнопка стрельбы</strong> - сенсорная кнопка (мобильные устройства)</li>
             </ul>
-            <p><strong>Цель:</strong> Выживите, уничтожите врагов, заработайте деньги!Не попадайтесь под пули!</p>
+            <p><strong>Цель:</strong> Выживите, уничтожите врагов, заработайте деньги! Не попадайтесь под пули!</p>
+            <p><strong>Особенности мобильного управления:</strong></p>
+            <ul>
+                <li>Виртуальный D-pad для движения</li>
+                <li>Прицеливание пальцем на экран</li>
+                <li>Кнопка стрельбы справа внизу</li>
+            </ul>
             <button id="back-btn" class="menu-btn">Назад</button>
         </div>
         
@@ -51,6 +60,20 @@
                 <button id="pause-btn" class="pause-btn">Пауза</button>
             </div>
             <canvas id="gameCanvas"></canvas>
+            
+            <!-- Мобильные элементы управления -->
+            <div id="mobile-controls" class="mobile-controls hidden">
+                <!-- D-pad для движения -->
+                <div id="movement-controls">
+                    <button id="move-up" class="dpad-btn" data-direction="up">↑</button>
+                    <button id="move-left" class="dpad-btn" data-direction="left">←</button>
+                    <button id="move-down" class="dpad-btn" data-direction="down">↓</button>
+                    <button id="move-right" class="dpad-btn" data-direction="right">→</button>
+                </div>
+                
+                <!-- Кнопка стрельбы -->
+                <button id="fire-btn" class="fire-btn">🔫</button>
+            </div>
         </div>
         
         <div id="game-over" class="hidden">
