@@ -20,11 +20,23 @@ class Game {
         this.keys = {};
         this.mouse = { x: 0, y: 0, worldX: 0, worldY: 0 };
         
+        // Мобильное управление
+        this.isMobile = this.detectMobileDevice();
+        this.touchControls = {
+            moveUp: false,
+            moveDown: false,
+            moveLeft: false,
+            moveRight: false,
+            shooting: false,
+            aimTouch: null
+        };
+        
         this.score = 0;
         this.lastTime = 0;
         
         this.setupEventListeners();
         this.createMapSelector();
+        this.setupMobileControls();
     }
     
     setupCanvas() {
@@ -60,6 +72,115 @@ class Game {
         });
     }
     
+    detectMobileDevice() {
+        return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+               window.innerWidth <= 768;
+    }
+    
+    setupMobileControls() {
+        const mobileControls = document.getElementById('mobile-controls');
+        
+        if (this.isMobile) {
+            mobileControls.classList.remove('hidden');
+            this.setupMobileEventListeners();
+        } else {
+            mobileControls.classList.add('hidden');
+        }
+    }
+    
+    setupMobileEventListeners() {
+        // D-pad buttons
+        const dpadButtons = document.querySelectorAll('.dpad-btn');
+        dpadButtons.forEach(button => {
+            const direction = button.dataset.direction;
+            
+            button.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                this.touchControls[`move${direction.charAt(0).toUpperCase() + direction.slice(1)}`] = true;
+                button.classList.add('active');
+            });
+            
+            button.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                this.touchControls[`move${direction.charAt(0).toUpperCase() + direction.slice(1)}`] = false;
+                button.classList.remove('active');
+            });
+            
+            button.addEventListener('touchcancel', (e) => {
+                e.preventDefault();
+                this.touchControls[`move${direction.charAt(0).toUpperCase() + direction.slice(1)}`] = false;
+                button.classList.remove('active');
+            });
+        });
+        
+        // Fire button
+        const fireButton = document.getElementById('fire-btn');
+        fireButton.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            this.touchControls.shooting = true;
+            fireButton.classList.add('active');
+        });
+        
+        fireButton.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            this.touchControls.shooting = false;
+            fireButton.classList.remove('active');
+        });
+        
+        fireButton.addEventListener('touchcancel', (e) => {
+            e.preventDefault();
+            this.touchControls.shooting = false;
+            fireButton.classList.remove('active');
+        });
+        
+        // Touch aiming on canvas
+        this.canvas.addEventListener('touchstart', (e) => {
+            if (e.touches.length === 1) {
+                const touch = e.touches[0];
+                const rect = this.canvas.getBoundingClientRect();
+                const x = touch.clientX - rect.left;
+                const y = touch.clientY - rect.top;
+                
+                this.touchControls.aimTouch = { x, y };
+                this.mouse.x = x;
+                this.mouse.y = y;
+                this.mouse.worldX = x + this.camera.x;
+                this.mouse.worldY = y + this.camera.y;
+            }
+        });
+        
+        this.canvas.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            if (e.touches.length === 1 && this.touchControls.aimTouch) {
+                const touch = e.touches[0];
+                const rect = this.canvas.getBoundingClientRect();
+                const x = touch.clientX - rect.left;
+                const y = touch.clientY - rect.top;
+                
+                this.touchControls.aimTouch = { x, y };
+                this.mouse.x = x;
+                this.mouse.y = y;
+                this.mouse.worldX = x + this.camera.x;
+                this.mouse.worldY = y + this.camera.y;
+            }
+        });
+        
+        this.canvas.addEventListener('touchend', (e) => {
+            if (e.touches.length === 0) {
+                this.touchControls.aimTouch = null;
+            }
+        });
+        
+        // Prevent default touch behaviors
+        this.canvas.addEventListener('touchstart', (e) => e.preventDefault());
+        this.canvas.addEventListener('touchmove', (e) => e.preventDefault());
+        document.addEventListener('touchstart', (e) => {
+            if (e.target.closest('.mobile-controls')) {
+                e.preventDefault();
+            }
+        }, { passive: false });
+    }
+    
     setupEventListeners() {
         document.getElementById('start-btn').addEventListener('click', () => this.startGame());
         document.getElementById('instructions-btn').addEventListener('click', () => this.showScreen('instructions'));
@@ -91,7 +212,13 @@ class Game {
         });
         
         this.canvas.addEventListener('click', (e) => {
-            if (this.state === 'playing' && !this.paused) {
+            if (this.state === 'playing' && !this.paused && !this.isMobile) {
+                this.player.shoot();
+            }
+        });
+        
+        this.canvas.addEventListener('mousedown', (e) => {
+            if (this.state === 'playing' && !this.paused && !this.isMobile) {
                 this.player.shoot();
             }
         });
@@ -723,10 +850,17 @@ class Player {
         let dx = 0;
         let dy = 0;
         
+        // Клавиатурное управление
         if (this.game.keys['KeyW'] || this.game.keys['ArrowUp']) dy -= 1;
         if (this.game.keys['KeyS'] || this.game.keys['ArrowDown']) dy += 1;
         if (this.game.keys['KeyA'] || this.game.keys['ArrowLeft']) dx -= 1;
         if (this.game.keys['KeyD'] || this.game.keys['ArrowRight']) dx += 1;
+        
+        // Мобильное управление
+        if (this.game.touchControls.moveUp) dy -= 1;
+        if (this.game.touchControls.moveDown) dy += 1;
+        if (this.game.touchControls.moveLeft) dx -= 1;
+        if (this.game.touchControls.moveRight) dx += 1;
         
         if (dx !== 0 || dy !== 0) {
             const length = Math.sqrt(dx * dx + dy * dy);
@@ -744,9 +878,25 @@ class Player {
             }
         }
         
-        const worldMouseX = this.game.mouse.worldX;
-        const worldMouseY = this.game.mouse.worldY;
+        // Обновление угла поворота (прицеливание)
+        let worldMouseX, worldMouseY;
+        
+        if (this.game.touchControls.aimTouch) {
+            // Сенсорное прицеливание
+            worldMouseX = this.game.touchControls.aimTouch.x + this.game.camera.x;
+            worldMouseY = this.game.touchControls.aimTouch.y + this.game.camera.y;
+        } else {
+            // Прицеливание мышью
+            worldMouseX = this.game.mouse.worldX;
+            worldMouseY = this.game.mouse.worldY;
+        }
+        
         this.angle = Math.atan2(worldMouseY - this.y, worldMouseX - this.x);
+        
+        // Автоматическая стрельба при удержании кнопки на мобильном
+        if (this.game.touchControls.shooting && this.shootCooldown <= 0 && this.ammo > 0) {
+            this.shoot();
+        }
     }
     
     shoot() {
