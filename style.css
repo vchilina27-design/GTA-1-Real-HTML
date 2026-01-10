@@ -50,6 +50,51 @@ body {
     margin-bottom: 30px;
 }
 
+/* Controls Selector */
+.controls-selector {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.controls-selector .menu-btn {
+    padding: 12px 20px;
+    font-size: 14px;
+    min-width: 150px;
+}
+
+.controls-content {
+    text-align: left;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.controls-content h3 {
+    color: #ffd700;
+    text-align: center;
+    margin-bottom: 15px;
+    font-size: 20px;
+}
+
+.controls-content h4 {
+    color: #4fc3f7;
+    margin: 15px 0 10px 0;
+    font-size: 16px;
+}
+
+.controls-content p {
+    margin-bottom: 8px;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.pc-controls, .mobile-controls {
+    margin-bottom: 15px;
+}
+
 .menu-buttons {
     display: flex;
     flex-direction: column;

@@ -61,15 +61,21 @@ class Game {
     }
     
     setupEventListeners() {
-        document.getElementById('start-btn').addEventListener('click', () => this.startGame());
-        document.getElementById('instructions-btn').addEventListener('click', () => this.showScreen('instructions'));
-        document.getElementById('about-btn').addEventListener('click', () => this.showScreen('about'));
-        document.getElementById('back-btn').addEventListener('click', () => this.showScreen('menu'));
-        document.getElementById('back-about-btn').addEventListener('click', () => this.showScreen('menu'));
-        document.getElementById('pause-btn').addEventListener('click', () => this.togglePause());
-        document.getElementById('restart-btn').addEventListener('click', () => this.startGame());
-        document.getElementById('main-menu-btn').addEventListener('click', () => this.showScreen('menu'));
+        // Основные кнопки меню
+        document.getElementById('start-btn')?.addEventListener('click', () => this.startGame());
+        document.getElementById('start-2d-btn')?.addEventListener('click', () => this.startGame());
+        document.getElementById('start-3d-btn')?.addEventListener('click', () => window.location.href = 'index-3d.html');
         
+        // Навигация по экранам
+        document.getElementById('instructions-btn')?.addEventListener('click', () => this.showScreen('instructions'));
+        document.getElementById('about-btn')?.addEventListener('click', () => this.showScreen('about'));
+        document.getElementById('back-btn')?.addEventListener('click', () => this.showScreen('menu'));
+        document.getElementById('back-about-btn')?.addEventListener('click', () => this.showScreen('menu'));
+        document.getElementById('pause-btn')?.addEventListener('click', () => this.togglePause());
+        document.getElementById('restart-btn')?.addEventListener('click', () => this.startGame());
+        document.getElementById('main-menu-btn')?.addEventListener('click', () => this.showScreen('menu'));
+        
+        // Клавиатура
         window.addEventListener('keydown', (e) => {
             this.keys[e.code] = true;
             if (e.code === 'Space' && this.state === 'playing' && !this.paused) {
@@ -82,6 +88,7 @@ class Game {
             this.keys[e.code] = false;
         });
         
+        // Мышь
         this.canvas.addEventListener('mousemove', (e) => {
             const rect = this.canvas.getBoundingClientRect();
             this.mouse.x = e.clientX - rect.left;

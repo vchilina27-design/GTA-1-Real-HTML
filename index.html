@@ -3,38 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GTA 1 Real - HTML5 Game</title>
+    <title>GTA Collection - 2D & 3D Браузерные игры</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div id="game-container">
         <div id="menu">
-            <h1>GTA 1 Real</h1>
-            <h2>Шутер-стрелялка</h2>
+            <h1>GTA Collection</h1>
+            <h2>2D & 3D Браузерные игры</h2>
             <div class="menu-buttons">
-                <button id="start-btn" class="menu-btn">Начать игру</button>
+                <button id="start-2d-btn" class="menu-btn">🎮 GTA 2D (Шутер)</button>
+                <button id="start-3d-btn" class="menu-btn">🚗 GTA 3D (Открытый мир)</button>
                 <button id="instructions-btn" class="menu-btn">Инструкции</button>
-                <button id="about-btn" class="menu-btn">О игре</button>
+                <button id="about-btn" class="menu-btn">О играх</button>
             </div>
         </div>
         
         <div id="instructions" class="hidden">
-            <h2>Инструкции</h2>
-            <p><strong>Управление:</strong></p>
-            <ul>
-                <li><strong>W, A, S, D</strong> или <strong>Стрелки</strong> - движение</li>
-                <li><strong>Пробел</strong> - стрельба</li>
-                <li><strong>Mouse</strong> - поворот и цель</li>
-            </ul>
-            <p><strong>Цель:</strong> Выживите, уничтожите врагов, заработайте деньги!Не попадайтесь под пули!</p>
+            <h2>Управление</h2>
+            <div class="controls-selector">
+                <button id="show-2d-controls" class="menu-btn">🎮 2D Шутер</button>
+                <button id="show-3d-controls" class="menu-btn">🚗 3D Открытый мир</button>
+            </div>
+            
+            <div id="2d-controls" class="controls-content">
+                <h3>🎮 GTA 2D (Шутер)</h3>
+                <p><strong>W, A, S, D</strong> или <strong>Стрелки</strong> - движение</p>
+                <p><strong>Пробел</strong> или <strong>Клик</strong> - стрельба</p>
+                <p><strong>Мышь</strong> - поворот и цель</p>
+                <p><strong>Цель:</strong> Выживите, уничтожьте врагов, заработайте деньги!</p>
+            </div>
+            
+            <div id="3d-controls" class="controls-content hidden">
+                <h3>🚗 GTA 3D (Открытый мир)</h3>
+                <div class="pc-controls">
+                    <h4>ПК</h4>
+                    <p><strong>W, A, S, D</strong> - движение</p>
+                    <p><strong>Мышь</strong> - поворот камеры</p>
+                    <p><strong>Пробел</strong> - удар кулаками</p>
+                    <p><strong>F</strong> - сесть/выйти из машины</p>
+                    <p><strong>Shift</strong> - тормоз</p>
+                </div>
+                <div class="mobile-controls">
+                    <h4>Мобильный</h4>
+                    <p><strong>Джойстик слева</strong> - движение</p>
+                    <p><strong>Кнопки справа</strong> - действия</p>
+                </div>
+            </div>
             <button id="back-btn" class="menu-btn">Назад</button>
         </div>
         
         <div id="about" class="hidden">
-            <h2>О игре</h2>
-            <p>Это игра в стиле GTA 1, созданная на HTML5, CSS3 и JavaScript.</p>
-            <p>Используйте все возможности современного браузера для игры в стиле классической вида сверху!</p>
-            <p><strong>Версия:</strong> 1.0.0</p>
+            <h2>О играх</h2>
+            <p><strong>GTA Collection</strong> - коллекция браузерных игр в стиле Grand Theft Auto.</p>
+            <p>🎮 <strong>GTA 2D</strong> - классический шутер с видом сверху в стиле GTA 1.</p>
+            <p>🚗 <strong>GTA 3D</strong> - современная 3D игра с открытым миром, машинами и боевкой.</p>
+            <p><strong>Технологии:</strong> HTML5, CSS3, JavaScript, Three.js, Cannon.js</p>
+            <p><strong>Версия:</strong> 2.0.0</p>
             <button id="back-about-btn" class="menu-btn">Назад</button>
         </div>
         
@@ -62,5 +87,37 @@
     </div>
     
     <script src="game.js"></script>
+    <script>
+        // Дополнительные обработчики для новых элементов интерфейса
+        document.addEventListener('DOMContentLoaded', function() {
+            // Переключение между 2D и 3D контролами
+            const show2dControls = document.getElementById('show-2d-controls');
+            const show3dControls = document.getElementById('show-3d-controls');
+            const twoDControls = document.getElementById('2d-controls');
+            const threeDControls = document.getElementById('3d-controls');
+
+            if (show2dControls) {
+                show2dControls.addEventListener('click', function() {
+                    twoDControls.classList.remove('hidden');
+                    threeDControls.classList.add('hidden');
+                });
+            }
+
+            if (show3dControls) {
+                show3dControls.addEventListener('click', function() {
+                    threeDControls.classList.remove('hidden');
+                    twoDControls.classList.add('hidden');
+                });
+            }
+
+            // Кнопка запуска 3D игры
+            const start3dBtn = document.getElementById('start-3d-btn');
+            if (start3dBtn) {
+                start3dBtn.addEventListener('click', function() {
+                    window.location.href = 'index-3d.html';
+                });
+            }
+        });
+    </script>
 </body>
 </html>
