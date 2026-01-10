@@ -137,3 +137,20 @@ dist
 # Vite logs files
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+
+# Game specific files
+*.tmp
+*.temp
+*.cache
+.DS_Store
+Thumbs.db
+
+# IDE files
+*.swp
+*.swo
+*~
+
+# Backup files
+*.bak
+*.backup
+*.orig

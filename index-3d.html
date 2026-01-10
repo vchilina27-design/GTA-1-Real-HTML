@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GTA 3D - Браузерная игра</title>
+    <link rel="stylesheet" href="style-3d.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/cannon@0.6.2/build/cannon.min.js"></script>
+</head>
+<body>
+    <div id="game-container">
+        <!-- Мобильный джойстик -->
+        <div id="mobile-controls" class="hidden">
+            <div id="joystick-base">
+                <div id="joystick-knob"></div>
+            </div>
+            <div id="action-buttons">
+                <button id="punch-btn" class="action-btn">👊</button>
+                <button id="enter-vehicle-btn" class="action-btn">🚗</button>
+                <button id="brake-btn" class="action-btn">🛑</button>
+            </div>
+        </div>
+
+        <!-- Меню -->
+        <div id="menu">
+            <h1>GTA 3D</h1>
+            <h2>Браузерная 3D игра</h2>
+            <div class="menu-buttons">
+                <button id="start-btn" class="menu-btn">Начать игру</button>
+                <button id="instructions-btn" class="menu-btn">Инструкции</button>
+            </div>
+        </div>
+        
+        <!-- Инструкции -->
+        <div id="instructions" class="hidden">
+            <h2>Управление</h2>
+            <div class="controls-info">
+                <div class="pc-controls">
+                    <h3>ПК</h3>
+                    <p><strong>W, A, S, D</strong> - движение</p>
+                    <p><strong>Мышь</strong> - поворот камеры</p>
+                    <p><strong>Пробел</strong> - удар</p>
+                    <p><strong>F</strong> - сесть/выйти из машины</p>
+                    <p><strong>Shift</strong> - тормоз</p>
+                </div>
+                <div class="mobile-controls">
+                    <h3>Мобильный</h3>
+                    <p><strong>Джойстик слева</strong> - движение</p>
+                    <p><strong>Кнопки справа</strong> - действия</p>
+                </div>
+            </div>
+            <button id="back-btn" class="menu-btn">Назад</button>
+        </div>
+        
+        <!-- HUD -->
+        <div id="hud" class="hidden">
+            <div id="health-section">
+                <span>❤️ Здоровье: </span>
+                <div id="health-bar">
+                    <div id="health-fill"></div>
+                </div>
+            </div>
+            <div id="vehicle-section" class="hidden">
+                <span>🚗 Состояние машины: </span>
+                <div id="vehicle-health-bar">
+                    <div id="vehicle-health-fill"></div>
+                </div>
+                <div id="fuel-section">
+                    <span>⛽ Топливо: </span>
+                    <div id="fuel-bar">
+                        <div id="fuel-fill"></div>
+                    </div>
+                </div>
+            </div>
+            <div id="action-log">Готов к действию</div>
+            <div id="vehicle-info" class="hidden">Внедорожник (медленнее, но прочнее)</div>
+            <div id="fps-counter">FPS: 60</div>
+        </div>
+        
+        <!-- Загрузочный экран -->
+        <div id="loading" class="hidden">
+            <div class="loading-spinner"></div>
+            <p>Загрузка 3D мира...</p>
+        </div>
+    </div>
+    
+    <script src="game-3d.js"></script>
+</body>
+</html>
