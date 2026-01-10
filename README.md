@@ -54,9 +54,14 @@ A GTA 1-style top-down shooter game built with HTML5, CSS3, and JavaScript. Feat
 - Textured buildings and obstacles
 - Color-coded bullets (yellow for player, orange for enemies)
 
+## 🌐 Play Online
+
+Play the game directly in your browser:
+**[https://vchilina27-design.github.io/GTA-1-Real-HTML/](https://vchilina27-design.github.io/GTA-1-Real-HTML/)**
+
 ## How to Play
 
-1. Open `index.html` in a modern web browser
+1. Open `index.html` in a modern web browser (or use the link above)
 2. Select your preferred map from the dropdown menu
 3. Click "Начать игру" (Start Game)
 4. Use **WASD** or **Arrow Keys** to move
