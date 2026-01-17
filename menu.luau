@@ -1,226 +1,274 @@
-local _0x1 = Instance.new("ScreenGui")
-local _0x2 = Instance.new("Frame")
-local _0x3 = Instance.new("TextLabel")
-local _0x4 = Instance.new("ScrollingFrame")
-local _0x5 = Instance.new("UIListLayout")
+-- Professional Luau UI Library Concept
+-- Optimized for Performance and Aesthetics
 
-_0x1.Name = "TranslucentMenu"
-_0x1.Parent = game:GetService("CoreGui")
-_0x1.ResetOnSpawn = false
+local UserInputService = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
+local Players = game:GetService("Players")
+local CoreGui = game:GetService("CoreGui")
+local TweenService = game:GetService("TweenService")
 
-_0x2.Name = "MainFrame"
-_0x2.Parent = _0x1
-_0x2.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-_0x2.BackgroundTransparency = 0.4
-_0x2.BorderSizePixel = 0
-_0x2.Position = UDim2.new(0.5, -150, 0.5, -200)
-_0x2.Size = UDim2.new(0, 300, 0, 400)
-_0x2.Active = true
-_0x2.Draggable = true
+local LocalPlayer = Players.LocalPlayer
+local Camera = workspace.CurrentCamera
+local Mouse = LocalPlayer:GetMouse()
 
-local _0x6 = Instance.new("UICorner")
-_0x6.CornerRadius = UDim.new(0, 10)
-_0x6.Parent = _0x2
+-- Theme Configuration
+local Theme = {
+    Main = Color3.fromRGB(28, 28, 30),
+    Accent = Color3.fromRGB(0, 122, 255),
+    Secondary = Color3.fromRGB(44, 44, 46),
+    Text = Color3.fromRGB(255, 255, 255),
+    TextDark = Color3.fromRGB(174, 174, 178),
+    Success = Color3.fromRGB(52, 199, 89),
+    Transparency = 0.25
+}
 
-_0x3.Name = "Title"
-_0x3.Parent = _0x2
-_0x3.BackgroundTransparency = 1
-_0x3.Size = UDim2.new(1, 0, 0, 40)
-_0x3.Font = Enum.Font.GothamBold
-_0x3.Text = "MENU"
-_0x3.TextColor3 = Color3.fromRGB(255, 255, 255)
-_0x3.TextSize = 20
+-- State Management
+local Library = {
+    Enabled = true,
+    Flags = {
+        Esp = false,
+        Aimbot = false,
+        Speed = false,
+        Jump = false,
+        Fly = false
+    }
+}
 
-_0x4.Name = "SettingsContainer"
-_0x4.Parent = _0x2
-_0x4.BackgroundTransparency = 1
-_0x4.BorderSizePixel = 0
-_0x4.Position = UDim2.new(0, 10, 0, 50)
-_0x4.Size = UDim2.new(1, -20, 1, -60)
-_0x4.ScrollBarThickness = 4
-_0x4.CanvasSize = UDim2.new(0, 0, 0, 0)
-_0x4.AutomaticCanvasSize = Enum.AutomaticSize.Y
+-- UI Creation
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "ProMenu_" .. math.random(100, 999)
+ScreenGui.Parent = CoreGui
+ScreenGui.ResetOnSpawn = false
 
-_0x5.Parent = _0x4
-_0x5.Padding = UDim.new(0, 8)
-_0x5.SortOrder = Enum.SortOrder.LayoutOrder
+local MainFrame = Instance.new("Frame")
+MainFrame.Size = UDim2.new(0, 500, 0, 350)
+MainFrame.Position = UDim2.new(0.5, -250, 0.5, -175)
+MainFrame.BackgroundColor3 = Theme.Main
+MainFrame.BackgroundTransparency = Theme.Transparency
+MainFrame.BorderSizePixel = 0
+MainFrame.Parent = ScreenGui
 
-local _0x7 = {Esp = false, Aimbot = false, Speed = false, Jump = false, Fly = false}
-local _0x8 = game:GetService("Players").LocalPlayer
-local _0x9 = _0x8.Character or _0x8.CharacterAdded:Wait()
-local _0x10 = _0x9:WaitForChild("Humanoid")
-local _0x11 = game:GetService("Workspace").CurrentCamera
+local UICorner = Instance.new("UICorner")
+UICorner.CornerRadius = UDim.new(0, 12)
+UICorner.Parent = MainFrame
 
-_0x8.CharacterAdded:Connect(function(_0x12)
-	_0x9 = _0x12
-	_0x10 = _0x12:WaitForChild("Humanoid")
-end)
+local UIStroke = Instance.new("UIStroke")
+UIStroke.Color = Theme.Accent
+UIStroke.Thickness = 1.5
+UIStroke.Transparency = 0.5
+UIStroke.Parent = MainFrame
 
-local function _0x13(_0x14)
-	local _0x15 = Instance.new("Frame")
-	local _0x16 = Instance.new("TextLabel")
-	local _0x17 = Instance.new("TextButton")
-	
-	_0x15.Name = _0x14
-	_0x15.Size = UDim2.new(1, 0, 0, 35)
-	_0x15.BackgroundTransparency = 0.8
-	_0x15.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-	_0x15.Parent = _0x4
-	
-	local _0x18 = Instance.new("UICorner")
-	_0x18.CornerRadius = UDim.new(0, 6)
-	_0x18.Parent = _0x15
-	
-	_0x16.Parent = _0x15
-	_0x16.BackgroundTransparency = 1
-	_0x16.Position = UDim2.new(0, 10, 0, 0)
-	_0x16.Size = UDim2.new(0.7, 0, 1, 0)
-	_0x16.Font = Enum.Font.Gotham
-	_0x16.Text = _0x14
-	_0x16.TextColor3 = Color3.fromRGB(255, 255, 255)
-	_0x16.TextSize = 14
-	_0x16.TextXAlignment = Enum.TextXAlignment.Left
-	
-	_0x17.Parent = _0x15
-	_0x17.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-	_0x17.Position = UDim2.new(0.75, 0, 0.15, 0)
-	_0x17.Size = UDim2.new(0.2, 0, 0.7, 0)
-	_0x17.Font = Enum.Font.Gotham
-	_0x17.Text = "OFF"
-	_0x17.TextColor3 = Color3.fromRGB(255, 255, 255)
-	_0x17.TextSize = 12
-	
-	local _0x19 = Instance.new("UICorner")
-	_0x19.CornerRadius = UDim.new(0, 4)
-	_0x19.Parent = _0x17
-	
-	_0x17.MouseButton1Click:Connect(function()
-		_0x7[_0x14] = not _0x7[_0x14]
-		_0x17.Text = _0x7[_0x14] and "ON" or "OFF"
-		_0x17.BackgroundColor3 = _0x7[_0x14] and Color3.fromRGB(0, 170, 0) or Color3.fromRGB(40, 40, 40)
-		
-		if _0x14 == "Speed" then
-			_0x10.WalkSpeed = _0x7[_0x14] and 50 or 16
-		elseif _0x14 == "Jump" then
-			_0x10.JumpPower = _0x7[_0x14] and 100 or 50
-		elseif _0x14 == "Fly" then
-			if _0x7[_0x14] then
-				local _0x20 = Instance.new("BodyVelocity")
-				_0x20.Name = "FlyVelocity"
-				_0x20.Velocity = Vector3.new(0, 0, 0)
-				_0x20.MaxForce = Vector3.new(4000, 4000, 4000)
-				_0x20.Parent = _0x9:WaitForChild("HumanoidRootPart")
-			else
-				local _0x20 = _0x9.HumanoidRootPart:FindFirstChild("FlyVelocity")
-				if _0x20 then _0x20:Destroy() end
-			end
-		end
-	end)
+-- Header
+local Header = Instance.new("Frame")
+Header.Size = UDim2.new(1, 0, 0, 45)
+Header.BackgroundTransparency = 1
+Header.Parent = MainFrame
+
+local Title = Instance.new("TextLabel")
+Title.Size = UDim2.new(1, -20, 1, 0)
+Title.Position = UDim2.new(0, 15, 0, 0)
+Title.BackgroundTransparency = 1
+Title.Text = "PREMIUM CHEAT SYSTEM"
+Title.Font = Enum.Font.GothamBold
+Title.TextColor3 = Theme.Text
+Title.TextSize = 16
+Title.TextXAlignment = Enum.TextXAlignment.Left
+Title.Parent = Header
+
+-- Dragging Logic (Professional Smooth)
+local dragging, dragInput, dragStart, startPos
+local function update(input)
+    local delta = input.Position - dragStart
+    local newPos = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+    TweenService:Create(MainFrame, TweenInfo.new(0.1, Enum.EasingStyle.Quad), {Position = newPos}):Play()
 end
 
-local function _0x21(_0x22)
-	if _0x22 ~= _0x8 then
-		local _0x23 = Instance.new("Highlight")
-		_0x23.Name = "EspHighlight"
-		_0x23.FillColor = Color3.fromRGB(255, 0, 0)
-		_0x23.OutlineColor = Color3.fromRGB(255, 255, 255)
-		_0x23.FillTransparency = 0.5
-		_0x23.OutlineTransparency = 0
-		_0x23.Enabled = _0x7.Esp
-		
-		local function _0x24(_0x25)
-			if _0x25 then
-				_0x23.Parent = _0x25
-			end
-		end
-		
-		_0x24(_0x22.Character)
-		_0x22.CharacterAdded:Connect(_0x24)
-	end
-end
-
-local function _0x26()
-	local _0x27 = nil
-	local _0x28 = math.huge
-	
-	for _, _0x29 in pairs(game:GetService("Players"):GetPlayers()) do
-		if _0x29 ~= _0x8 and _0x29.Character and _0x29.Character:FindFirstChild("Head") then
-			local _0x30, _0x31 = _0x11:WorldToViewportPoint(_0x29.Character.Head.Position)
-			if _0x31 then
-				local _0x32 = (Vector2.new(_0x30.X, _0x30.Y) - Vector2.new(_0x11.ViewportSize.X/2, _0x11.ViewportSize.Y/2)).Magnitude
-				if _0x32 < _0x28 then
-					_0x28 = _0x32
-					_0x27 = _0x29
-				end
-			end
-		end
-	end
-	return _0x27
-end
-
-for _, _0x29 in pairs(game:GetService("Players"):GetPlayers()) do
-	_0x21(_0x29)
-end
-game:GetService("Players").PlayerAdded:Connect(_0x21)
-
-game:GetService("RunService").RenderStepped:Connect(function()
-	if _0x7.Fly then
-		local _0x33 = _0x9:FindFirstChild("HumanoidRootPart")
-		local _0x20 = _0x33 and _0x33:FindFirstChild("FlyVelocity")
-		if _0x20 then
-			_0x20.Velocity = _0x10.MoveDirection * 50
-		end
-	end
-	
-	if _0x7.Aimbot then
-		local _0x34 = _0x26()
-		if _0x34 and _0x34.Character and _0x34.Character:FindFirstChild("Head") then
-			_0x11.CFrame = CFrame.new(_0x11.CFrame.Position, _0x34.Character.Head.Position)
-		end
-	end
-	
-	for _, _0x29 in pairs(game:GetService("Players"):GetPlayers()) do
-		if _0x29.Character then
-			local _0x35 = _0x29.Character:FindFirstChild("EspHighlight")
-			if _0x35 then
-				_0x35.Enabled = _0x7.Esp
-			end
-		end
-	end
+Header.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        dragging = true
+        dragStart = input.Position
+        startPos = MainFrame.Position
+        input.Changed:Connect(function()
+            if input.UserInputState == Enum.UserInputState.End then dragging = false end
+        end)
+    end
 end)
 
-local _0x36 = game:GetService("UserInputService")
-local _0x37 = Instance.new("TextButton")
-local _0x38 = Instance.new("UICorner")
-
-_0x37.Name = "MobileToggleButton"
-_0x37.Parent = _0x1
-_0x37.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-_0x37.BackgroundTransparency = 0.4
-_0x37.Position = UDim2.new(0, 10, 0.5, -20)
-_0x37.Size = UDim2.new(0, 40, 0, 40)
-_0x37.Font = Enum.Font.GothamBold
-_0x37.Text = "M"
-_0x37.TextColor3 = Color3.fromRGB(255, 255, 255)
-_0x37.TextSize = 20
-_0x37.Active = true
-_0x37.Draggable = true
-
-_0x38.CornerRadius = UDim.new(0, 8)
-_0x38.Parent = _0x37
-
-_0x37.MouseButton1Click:Connect(function()
-	_0x2.Visible = not _0x2.Visible
+Header.InputChanged:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then dragInput = input end
 end)
 
-_0x36.InputBegan:Connect(function(_0x39, _0x40)
-	if not _0x40 and _0x39.KeyCode == Enum.KeyCode.Insert then
-		_0x2.Visible = not _0x2.Visible
-	end
+UserInputService.InputChanged:Connect(function(input)
+    if input == dragInput and dragging then update(input) end
 end)
 
-_0x13("Esp")
-_0x13("Aimbot")
-_0x13("Speed")
-_0x13("Jump")
-_0x13("Fly")
+-- Tab System Layout
+local TabButtons = Instance.new("Frame")
+TabButtons.Size = UDim2.new(0, 140, 1, -55)
+TabButtons.Position = UDim2.new(0, 10, 0, 50)
+TabButtons.BackgroundTransparency = 1
+TabButtons.Parent = MainFrame
+
+local TabListLayout = Instance.new("UIListLayout")
+TabListLayout.Padding = UDim.new(0, 5)
+TabListLayout.Parent = TabButtons
+
+local ContentFrame = Instance.new("ScrollingFrame")
+ContentFrame.Size = UDim2.new(1, -165, 1, -60)
+ContentFrame.Position = UDim2.new(0, 155, 0, 50)
+ContentFrame.BackgroundTransparency = 1
+ContentFrame.BorderSizePixel = 0
+ContentFrame.ScrollBarThickness = 2
+ContentFrame.ScrollBarImageColor3 = Theme.Accent
+ContentFrame.Parent = MainFrame
+
+local ContentListLayout = Instance.new("UIListLayout")
+ContentListLayout.Padding = UDim.new(0, 8)
+ContentListLayout.Parent = ContentFrame
+
+-- Components
+local function CreateToggle(name, flag)
+    local ToggleFrame = Instance.new("TextButton")
+    ToggleFrame.Size = UDim2.new(1, -10, 0, 40)
+    ToggleFrame.BackgroundColor3 = Theme.Secondary
+    ToggleFrame.AutoButtonColor = false
+    ToggleFrame.Text = ""
+    ToggleFrame.Parent = ContentFrame
+
+    local Corner = Instance.new("UICorner")
+    Corner.CornerRadius = UDim.new(0, 6)
+    Corner.Parent = ToggleFrame
+
+    local Label = Instance.new("TextLabel")
+    Label.Size = UDim2.new(1, -50, 1, 0)
+    Label.Position = UDim2.new(0, 12, 0, 0)
+    Label.BackgroundTransparency = 1
+    Label.Text = name
+    Label.Font = Enum.Font.GothamMedium
+    Label.TextColor3 = Theme.TextDark
+    Label.TextSize = 14
+    Label.TextXAlignment = Enum.TextXAlignment.Left
+    Label.Parent = ToggleFrame
+
+    local Status = Instance.new("Frame")
+    Status.Size = UDim2.new(0, 24, 0, 12)
+    Status.Position = UDim2.new(1, -36, 0.5, -6)
+    Status.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+    Status.Parent = ToggleFrame
+
+    local StatusCorner = Instance.new("UICorner")
+    StatusCorner.CornerRadius = UDim.new(1, 0)
+    StatusCorner.Parent = Status
+
+    local Circle = Instance.new("Frame")
+    Circle.Size = UDim2.new(0, 10, 0, 10)
+    Circle.Position = UDim2.new(0, 1, 0.5, -5)
+    Circle.BackgroundColor3 = Color3.fromRGB(200, 200, 200)
+    Circle.Parent = Status
+
+    local CircleCorner = Instance.new("UICorner")
+    CircleCorner.CornerRadius = UDim.new(1, 0)
+    CircleCorner.Parent = Circle
+
+    ToggleFrame.MouseButton1Click:Connect(function()
+        Library.Flags[flag] = not Library.Flags[flag]
+        local active = Library.Flags[flag]
+        
+        TweenService:Create(Status, TweenInfo.new(0.2), {BackgroundColor3 = active and Theme.Accent or Color3.fromRGB(60, 60, 60)}):Play()
+        TweenService:Create(Circle, TweenInfo.new(0.2), {Position = active and UDim2.new(1, -11, 0.5, -5) or UDim2.new(0, 1, 0.5, -5)}):Play()
+        TweenService:Create(Label, TweenInfo.new(0.2), {TextColor3 = active and Theme.Text or Theme.TextDark}):Play()
+
+        -- Feature Execution
+        if flag == "Speed" then
+            LocalPlayer.Character.Humanoid.WalkSpeed = active and 60 or 16
+        elseif flag == "Jump" then
+            LocalPlayer.Character.Humanoid.JumpPower = active and 100 or 50
+        elseif flag == "Fly" then
+            local hrp = LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+            if active then
+                local bv = Instance.new("BodyVelocity", hrp)
+                bv.Name = "ProFly"
+                bv.MaxForce = Vector3.new(1e5, 1e5, 1e5)
+                bv.Velocity = Vector3.zero
+            else
+                if hrp:FindFirstChild("ProFly") then hrp.ProFly:Destroy() end
+            end
+        end
+    end)
+end
+
+-- Feature Logic (Optimized)
+local function GetClosest()
+    local target, dist = nil, math.huge
+    for _, p in pairs(Players:GetPlayers()) do
+        if p ~= LocalPlayer and p.Character and p.Character:FindFirstChild("Head") then
+            local pos, vis = Camera:WorldToViewportPoint(p.Character.Head.Position)
+            if vis then
+                local mag = (Vector2.new(pos.X, pos.Y) - Vector2.new(Camera.ViewportSize.X/2, Camera.ViewportSize.Y/2)).Magnitude
+                if mag < dist then dist = mag target = p end
+            end
+        end
+    end
+    return target
+end
+
+RunService.RenderStepped:Connect(function()
+    if Library.Flags.Aimbot then
+        local t = GetClosest()
+        if t then Camera.CFrame = CFrame.new(Camera.CFrame.Position, t.Character.Head.Position) end
+    end
+    
+    if Library.Flags.Fly then
+        local hrp = LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+        if hrp and hrp:FindFirstChild("ProFly") then
+            hrp.ProFly.Velocity = LocalPlayer.Character.Humanoid.MoveDirection * 100
+        end
+    end
+
+    for _, p in pairs(Players:GetPlayers()) do
+        if p ~= LocalPlayer and p.Character then
+            local h = p.Character:FindFirstChild("EspHighlight") or Instance.new("Highlight", p.Character)
+            h.Name = "EspHighlight"
+            h.Enabled = Library.Flags.Esp
+            h.FillColor = Theme.Accent
+            h.OutlineColor = Theme.Text
+            h.FillTransparency = 0.5
+        end
+    end
+end)
+
+-- Mobile Button (Sleek)
+local MobileBtn = Instance.new("TextButton")
+MobileBtn.Size = UDim2.new(0, 50, 0, 50)
+MobileBtn.Position = UDim2.new(0.1, 0, 0.1, 0)
+MobileBtn.BackgroundColor3 = Theme.Main
+MobileBtn.Text = "Ξ"
+MobileBtn.TextColor3 = Theme.Accent
+MobileBtn.TextSize = 24
+MobileBtn.Parent = ScreenGui
+MobileBtn.Draggable = true
+
+local MCorner = Instance.new("UICorner")
+MCorner.CornerRadius = UDim.new(1, 0)
+MCorner.Parent = MobileBtn
+
+MobileBtn.MouseButton1Click:Connect(function()
+    Library.Enabled = not Library.Enabled
+    MainFrame.Visible = Library.Enabled
+end)
+
+UserInputService.InputBegan:Connect(function(i, g)
+    if not g and i.KeyCode == Enum.KeyCode.Insert then
+        Library.Enabled = not Library.Enabled
+        MainFrame.Visible = Library.Enabled
+    end
+end)
+
+-- Init
+CreateToggle("Global ESP", "Esp")
+CreateToggle("Aimbot Assist", "Aimbot")
+CreateToggle("Hyper Speed", "Speed")
+CreateToggle("Power Jump", "Jump")
+CreateToggle("Air Flight", "Fly")
+
+print("Premium System Loaded Successfully.")
