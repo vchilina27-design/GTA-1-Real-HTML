@@ -377,17 +377,36 @@ RunService.RenderStepped:Connect(function()
         end
     end
 
-    -- Bomb Chip Specific Logic
-    if Library.Flags.BombChipItems then
+    -- Bomb Chip Specific Logic (Enhanced)
+    if Library.Flags.BombChipItems or Library.Flags.BombChipEsp then
         for _, item in pairs(workspace:GetDescendants()) do
-            if item:IsA("BasePart") and (item.Name:lower():find("chip") or item.Name:lower():find("bomb") or item.Name:lower():find("part")) then
+            -- Look for parts, folders or models that might contain "chip" or "bomb" in their name
+            local name = item.Name:lower()
+            local isTarget = name:find("chip") or name:find("bomb") or name:find("point") or name:find("objective")
+            
+            if isTarget and item:IsA("BasePart") then
                 local h = item:FindFirstChild("BombHighlight") or Instance.new("Highlight", item)
                 h.Name = "BombHighlight"
                 h.FillColor = Color3.fromRGB(255, 0, 255)
                 h.OutlineColor = Color3.fromRGB(255, 255, 255)
-                h.Enabled = true
+                h.Enabled = Library.Flags.BombChipItems
+            elseif isTarget and (item:IsA("Model") or item:IsA("Folder")) then
+                -- Apply to all parts in the model
+                for _, child in pairs(item:GetDescendants()) do
+                    if child:IsA("BasePart") then
+                        local h = child:FindFirstChild("BombHighlight") or Instance.new("Highlight", child)
+                        h.Name = "BombHighlight"
+                        h.FillColor = Color3.fromRGB(255, 0, 255)
+                        h.Enabled = Library.Flags.BombChipItems
+                    end
+                end
             end
         end
+    end
+    
+    -- Sync BombChipEsp with Global Esp logic if needed
+    if Library.Flags.BombChipEsp then
+        Library.Flags.Esp = true
     end
 end)
 
