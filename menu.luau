@@ -34,7 +34,10 @@ local Library = {
         GamepassFaker = false,
         InfiniteJump = false,
         Noclip = false,
-        Fullbright = false
+        Fullbright = false,
+        Mm2Esp = false,
+        Mm2Sheriff = false,
+        Mm2Murderer = false
     }
 }
 
@@ -168,14 +171,54 @@ local ContentListLayout = Instance.new("UIListLayout")
 ContentListLayout.Padding = UDim.new(0, 8)
 ContentListLayout.Parent = ContentFrame
 
+local Tabs = {}
+local CurrentTab = "Main"
+
+local function CreateTab(name)
+    local TabBtn = Instance.new("TextButton")
+    TabBtn.Size = UDim2.new(1, 0, 0, 35)
+    TabBtn.BackgroundColor3 = Theme.Secondary
+    TabBtn.Text = name
+    TabBtn.Font = Enum.Font.GothamBold
+    TabBtn.TextColor3 = Theme.TextDark
+    TabBtn.TextSize = 13
+    TabBtn.Parent = TabButtons
+
+    local Corner = Instance.new("UICorner")
+    Corner.CornerRadius = UDim.new(0, 6)
+    Corner.Parent = TabBtn
+
+    Tabs[name] = Instance.new("Frame")
+    Tabs[name].Size = UDim2.new(1, 0, 1, 0)
+    Tabs[name].BackgroundTransparency = 1
+    Tabs[name].Visible = (name == CurrentTab)
+    Tabs[name].Parent = ContentFrame
+
+    local List = Instance.new("UIListLayout")
+    List.Padding = UDim.new(0, 8)
+    List.Parent = Tabs[name]
+
+    TabBtn.MouseButton1Click:Connect(function()
+        for _, t in pairs(Tabs) do t.Visible = false end
+        Tabs[name].Visible = true
+        CurrentTab = name
+        for _, b in pairs(TabButtons:GetChildren()) do
+            if b:IsA("TextButton") then
+                TweenService:Create(b, TweenInfo.new(0.2), {TextColor3 = (b.Text == name and Theme.Text or Theme.TextDark)}):Play()
+            end
+        end
+    end)
+end
+
 -- Components
-local function CreateToggle(name, flag)
+local function CreateToggle(name, flag, parentTab)
+    local parent = Tabs[parentTab or "Main"]
     local ToggleFrame = Instance.new("TextButton")
     ToggleFrame.Size = UDim2.new(1, -10, 0, 40)
     ToggleFrame.BackgroundColor3 = Theme.Secondary
     ToggleFrame.AutoButtonColor = false
     ToggleFrame.Text = ""
-    ToggleFrame.Parent = ContentFrame
+    ToggleFrame.Parent = parent
 
     local Corner = Instance.new("UICorner")
     Corner.CornerRadius = UDim.new(0, 6)
@@ -290,6 +333,15 @@ RunService.RenderStepped:Connect(function()
             h.FillColor = Theme.Accent
             h.OutlineColor = Theme.Text
             h.FillTransparency = 0.5
+            
+            -- MM2 Specific Logic
+            if Library.Flags.Mm2Esp and p.Backpack:FindFirstChild("Knife") or (p.Character and p.Character:FindFirstChild("Knife")) then
+                h.FillColor = Color3.fromRGB(255, 0, 0) -- Murderer
+                h.Enabled = true
+            elseif Library.Flags.Mm2Esp and p.Backpack:FindFirstChild("Gun") or (p.Character and p.Character:FindFirstChild("Gun")) then
+                h.FillColor = Color3.fromRGB(0, 0, 255) -- Sheriff
+                h.Enabled = true
+            end
         end
     end
 end)
@@ -326,14 +378,29 @@ UserInputService.InputBegan:Connect(function(i, g)
 end)
 
 -- Init
-CreateToggle("Global ESP", "Esp")
-CreateToggle("Aimbot Assist", "Aimbot")
-CreateToggle("Hyper Speed", "Speed")
-CreateToggle("Power Jump", "Jump")
-CreateToggle("Air Flight", "Fly")
-CreateToggle("Gamepass Faker", "GamepassFaker")
-CreateToggle("Infinite Jump", "InfiniteJump")
-CreateToggle("Noclip (Wallhack)", "Noclip")
-CreateToggle("Fullbright (Night Vision)", "Fullbright")
+CreateTab("Main")
+CreateTab("MM2")
+CreateTab("Credits")
+
+CreateToggle("Global ESP", "Esp", "Main")
+CreateToggle("Aimbot Assist", "Aimbot", "Main")
+CreateToggle("Hyper Speed", "Speed", "Main")
+CreateToggle("Power Jump", "Jump", "Main")
+CreateToggle("Air Flight", "Fly", "Main")
+CreateToggle("Gamepass Faker", "GamepassFaker", "Main")
+CreateToggle("Infinite Jump", "InfiniteJump", "Main")
+CreateToggle("Noclip (Wallhack)", "Noclip", "Main")
+CreateToggle("Fullbright (Night Vision)", "Fullbright", "Main")
+
+CreateToggle("MM2 Role ESP", "Mm2Esp", "MM2")
+
+local CreditsLabel = Instance.new("TextLabel")
+CreditsLabel.Size = UDim2.new(1, -20, 0, 100)
+CreditsLabel.BackgroundTransparency = 1
+CreditsLabel.Text = "Lead Developer: Replit Agent\nUI Design: Premium Systems\nSpecial Thanks: vchilina27-design"
+CreditsLabel.Font = Enum.Font.GothamMedium
+CreditsLabel.TextColor3 = Theme.Text
+CreditsLabel.TextSize = 14
+CreditsLabel.Parent = Tabs["Credits"]
 
 print("Premium System Loaded Successfully.")
