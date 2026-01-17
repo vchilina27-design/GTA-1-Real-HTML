@@ -30,9 +30,33 @@ local Library = {
         Aimbot = false,
         Speed = false,
         Jump = false,
-        Fly = false
+        Fly = false,
+        GamepassFaker = false
     }
 }
+
+-- Gamepass Spoofing Logic
+local MarketplaceService = game:GetService("MarketplaceService")
+local OldUserOwnsGamePassAsync
+OldUserOwnsGamePassAsync = hookmetamethod(game, "__namecall", function(self, ...)
+    local method = getnamecallmethod()
+    local args = {...}
+    
+    if not checkcaller() and self == MarketplaceService and method == "UserOwnsGamePassAsync" and Library.Flags.GamepassFaker then
+        return true
+    end
+    
+    return OldUserOwnsGamePassAsync(self, ...)
+end)
+
+-- Alternative hook for direct calls
+local OldUserOwnsGamePass = MarketplaceService.UserOwnsGamePassAsync
+MarketplaceService.UserOwnsGamePassAsync = function(self, ...)
+    if Library.Flags.GamepassFaker then
+        return true
+    end
+    return OldUserOwnsGamePass(self, ...)
+end
 
 -- UI Creation
 local ScreenGui = Instance.new("ScreenGui")
@@ -270,5 +294,6 @@ CreateToggle("Aimbot Assist", "Aimbot")
 CreateToggle("Hyper Speed", "Speed")
 CreateToggle("Power Jump", "Jump")
 CreateToggle("Air Flight", "Fly")
+CreateToggle("Gamepass Faker", "GamepassFaker")
 
 print("Premium System Loaded Successfully.")
