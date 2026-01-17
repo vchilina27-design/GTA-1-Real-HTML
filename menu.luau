@@ -46,7 +46,25 @@ UIListLayout.Parent = SettingsContainer
 UIListLayout.Padding = UDim.new(0, 8)
 UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
 
--- Helper function to create a placeholder setting row
+-- State for features
+local States = {
+        Esp = false,
+        Aimbot = false,
+        Speed = false,
+        Jump = false,
+        Fly = false
+}
+
+local Player = game:GetService("Players").LocalPlayer
+local Character = Player.Character or Player.CharacterAdded:Wait()
+local Humanoid = Character:WaitForChild("Humanoid")
+
+Player.CharacterAdded:Connect(function(char)
+        Character = char
+        Humanoid = char:WaitForChild("Humanoid")
+end)
+
+-- Helper function to create a setting row with logic
 local function createSetting(name)
         local Frame = Instance.new("Frame")
         local Label = Instance.new("TextLabel")
@@ -84,14 +102,43 @@ local function createSetting(name)
         local BtnCorner = Instance.new("UICorner")
         BtnCorner.CornerRadius = UDim.new(0, 4)
         BtnCorner.Parent = Button
+
+        Button.MouseButton1Click:Connect(function()
+                States[name] = not States[name]
+                Button.Text = States[name] and "ON" or "OFF"
+                Button.BackgroundColor3 = States[name] and Color3.fromRGB(0, 170, 0) or Color3.fromRGB(40, 40, 40)
+                
+                -- Logic implementation
+                if name == "Speed" then
+                        Humanoid.WalkSpeed = States[name] and 50 or 16
+                elseif name == "Jump" then
+                        Humanoid.JumpPower = States[name] and 100 or 50
+                elseif name == "Fly" then
+                        -- Simple fly placeholder (requires more complex BodyVelocity logic)
+                        if States[name] then
+                                local bv = Instance.new("BodyVelocity")
+                                bv.Name = "FlyVelocity"
+                                bv.Velocity = Vector3.new(0, 0, 0)
+                                bv.MaxForce = Vector3.new(4000, 4000, 4000)
+                                bv.Parent = Character:WaitForChild("HumanoidRootPart")
+                        else
+                                local bv = Character.HumanoidRootPart:FindFirstChild("FlyVelocity")
+                                if bv then bv:Destroy() end
+                        end
+                end
+        end)
 end
 
--- Adding some dummy settings
-createSetting("Esp")
-createSetting("Aimbot")
-createSetting("Speed")
-createSetting("Jump")
-createSetting("Fly")
+-- Logic for Aimbot/Esp loop
+game:GetService("RunService").RenderStepped:Connect(function()
+        if States.Fly then
+                local hrp = Character:FindFirstChild("HumanoidRootPart")
+                local bv = hrp and hrp:FindFirstChild("FlyVelocity")
+                if bv then
+                        bv.Velocity = Humanoid.MoveDirection * 50
+                end
+        end
+end)
 
 -- Toggle visibility with Insert key
 local UserInputService = game:GetService("UserInputService")
@@ -123,3 +170,10 @@ UserInputService.InputBegan:Connect(function(input, gameProcessed)
                 MainFrame.Visible = not MainFrame.Visible
         end
 end)
+
+-- Initialize settings
+createSetting("Esp")
+createSetting("Aimbot")
+createSetting("Speed")
+createSetting("Jump")
+createSetting("Fly")
