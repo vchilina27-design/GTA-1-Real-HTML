@@ -41,7 +41,9 @@ local Library = {
         BlindShotEsp = false,
         BlindShotAimbot = false,
         RedfieldEsp = false,
-        RedfieldItems = false
+        RedfieldItems = false,
+        BombChipEsp = false,
+        BombChipItems = false
     }
 }
 
@@ -374,6 +376,19 @@ RunService.RenderStepped:Connect(function()
             end
         end
     end
+
+    -- Bomb Chip Specific Logic
+    if Library.Flags.BombChipItems then
+        for _, item in pairs(workspace:GetDescendants()) do
+            if item:IsA("BasePart") and (item.Name:lower():find("chip") or item.Name:lower():find("bomb") or item.Name:lower():find("part")) then
+                local h = item:FindFirstChild("BombHighlight") or Instance.new("Highlight", item)
+                h.Name = "BombHighlight"
+                h.FillColor = Color3.fromRGB(255, 0, 255)
+                h.OutlineColor = Color3.fromRGB(255, 255, 255)
+                h.Enabled = true
+            end
+        end
+    end
 end)
 
 -- Mobile Button (Sleek)
@@ -412,6 +427,7 @@ CreateTab("Main")
 CreateTab("MM2")
 CreateTab("Blind Shot")
 CreateTab("Redfield")
+CreateTab("Bomb Chip")
 CreateTab("Credits")
 
 CreateToggle("Global ESP", "Esp", "Main")
@@ -431,6 +447,9 @@ CreateToggle("Aimbot Lock", "BlindShotAimbot", "Blind Shot")
 
 CreateToggle("Student/Teacher ESP", "RedfieldEsp", "Redfield")
 CreateToggle("Highlight Key Items", "RedfieldItems", "Redfield")
+
+CreateToggle("Player ESP", "BombChipEsp", "Bomb Chip")
+CreateToggle("Highlight Chips/Bombs", "BombChipItems", "Bomb Chip")
 
 local CreditsLabel = Instance.new("TextLabel")
 CreditsLabel.Size = UDim2.new(1, -20, 0, 100)
