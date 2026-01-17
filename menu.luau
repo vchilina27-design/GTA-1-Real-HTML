@@ -377,37 +377,32 @@ RunService.RenderStepped:Connect(function()
         end
     end
 
-    -- Bomb Chip Specific Logic (Enhanced)
+    -- Bomb Chip Specific Logic (Enhanced & Optimized)
     if Library.Flags.BombChipItems or Library.Flags.BombChipEsp then
-        -- Use pcall to prevent errors if parts are destroyed during iteration
-        pcall(function()
-            local gameCells = workspace:FindFirstChild("gameCells")
-            if gameCells then
-                local descendants = gameCells:GetDescendants()
-                for i = 1, #descendants do
-                    local obj = descendants[i]
-                    if obj.Name == "chip" or obj.Name:lower():find("chip") then
-                        local h = obj:FindFirstChild("BombHighlight") or Instance.new("Highlight", obj)
-                        h.Name = "BombHighlight"
-                        h.FillColor = Color3.fromRGB(255, 0, 255)
-                        h.OutlineColor = Color3.fromRGB(255, 255, 255)
-                        h.Enabled = Library.Flags.BombChipItems
-                        h.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+        -- Run optimization: only check once every few frames to save FPS
+        if tick() % 0.5 < 0.1 then 
+            pcall(function()
+                local gameCells = workspace:FindFirstChild("gameCells")
+                if gameCells then
+                    local descendants = gameCells:GetDescendants()
+                    for i = 1, #descendants do
+                        local obj = descendants[i]
+                        if obj.Name == "chip" or obj.Name:lower():find("chip") then
+                            local h = obj:FindFirstChild("BombHighlight")
+                            if not h then
+                                h = Instance.new("Highlight")
+                                h.Name = "BombHighlight"
+                                h.Parent = obj
+                                h.FillColor = Color3.fromRGB(255, 0, 255)
+                                h.OutlineColor = Color3.fromRGB(255, 255, 255)
+                                h.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+                            end
+                            h.Enabled = Library.Flags.BombChipItems
+                        end
                     end
                 end
-            end
-            
-            -- Fallback for standalone chips not in gameCells
-            for _, item in pairs(workspace:GetDescendants()) do
-                if item.Name:lower():find("chip") and not item:FindFirstChild("BombHighlight") then
-                    local h = Instance.new("Highlight", item)
-                    h.Name = "BombHighlight"
-                    h.FillColor = Color3.fromRGB(255, 0, 255)
-                    h.Enabled = Library.Flags.BombChipItems
-                    h.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
-                end
-            end
-        end)
+            end)
+        end
     end
     
     -- Sync BombChipEsp with Global Esp logic if needed
