@@ -382,23 +382,19 @@ RunService.RenderStepped:Connect(function()
         for _, item in pairs(workspace:GetDescendants()) do
             -- Look for parts, folders or models that might contain "chip" or "bomb" in their name
             local name = item.Name:lower()
-            local isTarget = name:find("chip") or name:find("bomb") or name:find("point") or name:find("objective")
+            -- Broadened search for "chip" related structures based on Dex information
+            local isTarget = name:find("chip") or name:find("bomb") or name:find("point") or name:find("objective") or name:find("collect")
             
-            if isTarget and item:IsA("BasePart") then
+            if isTarget and (item:IsA("BasePart") or item:IsA("Model") or item:IsA("MeshPart") or item:IsA("UnionOperation")) then
                 local h = item:FindFirstChild("BombHighlight") or Instance.new("Highlight", item)
                 h.Name = "BombHighlight"
                 h.FillColor = Color3.fromRGB(255, 0, 255)
                 h.OutlineColor = Color3.fromRGB(255, 255, 255)
                 h.Enabled = Library.Flags.BombChipItems
-            elseif isTarget and (item:IsA("Model") or item:IsA("Folder")) then
-                -- Apply to all parts in the model
-                for _, child in pairs(item:GetDescendants()) do
-                    if child:IsA("BasePart") then
-                        local h = child:FindFirstChild("BombHighlight") or Instance.new("Highlight", child)
-                        h.Name = "BombHighlight"
-                        h.FillColor = Color3.fromRGB(255, 0, 255)
-                        h.Enabled = Library.Flags.BombChipItems
-                    end
+                
+                -- Support for models without highlights
+                if item:IsA("Model") then
+                    h.Adornee = item
                 end
             end
         end
