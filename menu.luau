@@ -38,60 +38,36 @@ local Library = {
 -- Gamepass Spoofing Logic
 local MarketplaceService = game:GetService("MarketplaceService")
 
--- Advanced Gamepass Spoofing (Hardened for Anti-Cheats)
+-- Silent Gamepass Spoofing (Undetectable Logic)
 local function hardenedHook()
     local success, err = pcall(function()
-        local MT = getrawmetatable(game)
-        local OldNamecall = MT.__namecall
-        local OldIndex = MT.__index
-        setreadonly(MT, false)
-
-        -- Spoof Namecall (GamePass checks via :UserOwnsGamePassAsync)
-        MT.__namecall = newcclosure(function(self, ...)
+        if not hookmetamethod then return end
+        
+        -- Use hookmetamethod for better stealth
+        local oldNamecall
+        oldNamecall = hookmetamethod(game, "__namecall", function(self, ...)
             local method = getnamecallmethod()
             if not checkcaller() and Library.Flags.GamepassFaker then
-                if self == MarketplaceService and (method == "UserOwnsGamePassAsync" or method:lower() == "userownsgamepassasync") then
+                if self == MarketplaceService and (method == "UserOwnsGamePassAsync" or method == "PlayerOwnsAsset") then
                     return true
                 end
             end
-            return OldNamecall(self, ...)
+            return oldNamecall(self, ...)
         end)
 
-        -- Spoof Index (GamePass checks via .UserOwnsGamePassAsync)
-        MT.__index = newcclosure(function(self, key)
+        -- Fallback for direct index access
+        local oldIndex
+        oldIndex = hookmetamethod(game, "__index", function(self, key)
             if not checkcaller() and Library.Flags.GamepassFaker then
-                if self == MarketplaceService and (tostring(key) == "UserOwnsGamePassAsync" or tostring(key):lower() == "userownsgamepassasync") then
+                if self == MarketplaceService and (key == "UserOwnsGamePassAsync" or key == "PlayerOwnsAsset") then
                     return function() return true end
                 end
             end
-            return OldIndex(self, key)
+            return oldIndex(self, key)
         end)
-
-        -- Hooking at the Function Level (Universal Bypass)
-        local function bypass(orig)
-            return function(self, ...)
-                if not checkcaller() and Library.Flags.GamepassFaker then
-                    return true
-                end
-                return orig(self, ...)
-            end
-        end
-
-        MarketplaceService.UserOwnsGamePassAsync = newcclosure(bypass(MarketplaceService.UserOwnsGamePassAsync))
-        
-        -- Additional Spoofing for high-security games (Asset Ownership)
-        local OldPlayerOwnsAsset = MarketplaceService.PlayerOwnsAsset
-        MarketplaceService.PlayerOwnsAsset = newcclosure(function(self, player, id)
-            if not checkcaller() and Library.Flags.GamepassFaker and player == LocalPlayer then
-                return true
-            end
-            return OldPlayerOwnsAsset(self, player, id)
-        end)
-
-        setreadonly(MT, true)
     end)
     if not success then
-        warn("Advanced Gamepass Hook failed: " .. tostring(err))
+        warn("Stealth Hook failed: " .. tostring(err))
     end
 end
 
