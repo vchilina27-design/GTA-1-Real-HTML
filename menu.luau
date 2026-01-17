@@ -37,7 +37,9 @@ local Library = {
         Fullbright = false,
         Mm2Esp = false,
         Mm2Sheriff = false,
-        Mm2Murderer = false
+        Mm2Murderer = false,
+        BlindShotEsp = false,
+        BlindShotAimbot = false
     }
 }
 
@@ -298,7 +300,7 @@ local function GetClosest()
 end
 
 RunService.RenderStepped:Connect(function()
-    if Library.Flags.Aimbot then
+        if Library.Flags.Aimbot or Library.Flags.BlindShotAimbot then
         local t = GetClosest()
         if t then Camera.CFrame = CFrame.new(Camera.CFrame.Position, t.Character.Head.Position) end
     end
@@ -342,6 +344,14 @@ RunService.RenderStepped:Connect(function()
                 h.FillColor = Color3.fromRGB(0, 0, 255) -- Sheriff
                 h.Enabled = true
             end
+
+            -- Blind Shot Specific Logic
+            if Library.Flags.BlindShotEsp then
+                h.Enabled = true
+                h.FillColor = Theme.Accent
+                h.OutlineTransparency = 0
+                h.FillTransparency = 0.2
+            end
         end
     end
 end)
@@ -380,6 +390,7 @@ end)
 -- Init
 CreateTab("Main")
 CreateTab("MM2")
+CreateTab("Blind Shot")
 CreateTab("Credits")
 
 CreateToggle("Global ESP", "Esp", "Main")
@@ -393,6 +404,9 @@ CreateToggle("Noclip (Wallhack)", "Noclip", "Main")
 CreateToggle("Fullbright (Night Vision)", "Fullbright", "Main")
 
 CreateToggle("MM2 Role ESP", "Mm2Esp", "MM2")
+
+CreateToggle("Enable ESP", "BlindShotEsp", "Blind Shot")
+CreateToggle("Aimbot Lock", "BlindShotAimbot", "Blind Shot")
 
 local CreditsLabel = Instance.new("TextLabel")
 CreditsLabel.Size = UDim2.new(1, -20, 0, 100)
