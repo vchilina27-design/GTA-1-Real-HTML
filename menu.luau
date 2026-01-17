@@ -23,29 +23,34 @@ local Theme = {
 }
 
 -- State Management
-local Library = {
-    Enabled = true,
-    Flags = {
-        Esp = false,
-        Aimbot = false,
-        Speed = false,
-        Jump = false,
-        Fly = false,
-        GamepassFaker = false,
-        InfiniteJump = false,
-        Noclip = false,
-        Fullbright = false,
-        Mm2Esp = false,
-        Mm2Sheriff = false,
-        Mm2Murderer = false,
-        BlindShotEsp = false,
-        BlindShotAimbot = false,
-        RedfieldEsp = false,
-        RedfieldItems = false,
-        BombChipEsp = false,
-        BombChipItems = false
+    -- State Management
+    local Library = {
+        Enabled = true,
+        Flags = {
+            Esp = false,
+            Aimbot = false,
+            Speed = false,
+            Jump = false,
+            Fly = false,
+            GamepassFaker = false,
+            InfiniteJump = false,
+            Noclip = false,
+            Fullbright = false,
+            Mm2Esp = false,
+            Mm2Sheriff = false,
+            Mm2Murderer = false,
+            BlindShotEsp = false,
+            BlindShotAimbot = false,
+            RedfieldEsp = false,
+            RedfieldItems = false,
+            BombChipEsp = false,
+            BombChipItems = false,
+            AntiAfk = false,
+            AutoClick = false,
+            NoRender = false
+        }
     }
-}
+
 
 -- Gamepass Spoofing Logic
 local MarketplaceService = game:GetService("MarketplaceService")
@@ -331,6 +336,25 @@ RunService.RenderStepped:Connect(function()
         game:GetService("Lighting").GlobalShadows = false
     end
 
+    if Library.Flags.AntiAfk then
+        local VirtualUser = game:GetService("VirtualUser")
+        LocalPlayer.Idled:Connect(function()
+            VirtualUser:CaptureController()
+            VirtualUser:ClickButton2(Vector2.new())
+        end)
+    end
+
+    if Library.Flags.AutoClick then
+        local VirtualUser = game:GetService("VirtualUser")
+        VirtualUser:Button1Down(Vector2.new(0,0), workspace.CurrentCamera.CFrame)
+    end
+
+    if Library.Flags.NoRender then
+        RunService:Set3dRenderingEnabled(false)
+    else
+        RunService:Set3dRenderingEnabled(true)
+    end
+
     for _, p in pairs(Players:GetPlayers()) do
         if p ~= LocalPlayer and p.Character then
             local h = p.Character:FindFirstChild("EspHighlight") or Instance.new("Highlight", p.Character)
@@ -459,6 +483,9 @@ CreateToggle("Gamepass Faker", "GamepassFaker", "Main")
 CreateToggle("Infinite Jump", "InfiniteJump", "Main")
 CreateToggle("Noclip (Wallhack)", "Noclip", "Main")
 CreateToggle("Fullbright (Night Vision)", "Fullbright", "Main")
+CreateToggle("Anti-AFK (Stay Online)", "AntiAfk", "Main")
+CreateToggle("Auto Clicker (Left Click)", "AutoClick", "Main")
+CreateToggle("No Render (FPS Boost)", "NoRender", "Main")
 
 CreateToggle("MM2 Role ESP", "Mm2Esp", "MM2")
 
@@ -474,7 +501,7 @@ CreateToggle("Highlight Chips/Bombs", "BombChipItems", "Bomb Chip")
 local CreditsLabel = Instance.new("TextLabel")
 CreditsLabel.Size = UDim2.new(1, -20, 0, 100)
 CreditsLabel.BackgroundTransparency = 1
-CreditsLabel.Text = "Lead Developer: Replit Agent\nUI Design: Premium Systems\nSpecial Thanks: vchilina27-design"
+CreditsLabel.Text = "CEO & Owner: " .. LocalPlayer.Name .. "\nLead Developer: Replit Agent\nUI Design: Premium Systems\nSpecial Thanks: vchilina27-design"
 CreditsLabel.Font = Enum.Font.GothamMedium
 CreditsLabel.TextColor3 = Theme.Text
 CreditsLabel.TextSize = 14
