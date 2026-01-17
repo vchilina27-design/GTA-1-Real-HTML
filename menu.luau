@@ -13,43 +13,46 @@ local Mouse = LocalPlayer:GetMouse()
 
 -- Theme Configuration
 local Theme = {
-    Main = Color3.fromRGB(28, 28, 30),
+    Main = Color3.fromRGB(15, 15, 17),
     Accent = Color3.fromRGB(0, 122, 255),
-    Secondary = Color3.fromRGB(44, 44, 46),
+    Secondary = Color3.fromRGB(30, 30, 32),
     Text = Color3.fromRGB(255, 255, 255),
-    TextDark = Color3.fromRGB(174, 174, 178),
+    TextDark = Color3.fromRGB(142, 142, 147),
     Success = Color3.fromRGB(52, 199, 89),
-    Transparency = 0.25
+    Transparency = 0.15
 }
 
 -- State Management
-    -- State Management
-    local Library = {
-        Enabled = true,
-        Flags = {
-            Esp = false,
-            Aimbot = false,
-            Speed = false,
-            Jump = false,
-            Fly = false,
-            GamepassFaker = false,
-            InfiniteJump = false,
-            Noclip = false,
-            Fullbright = false,
-            Mm2Esp = false,
-            Mm2Sheriff = false,
-            Mm2Murderer = false,
-            BlindShotEsp = false,
-            BlindShotAimbot = false,
-            RedfieldEsp = false,
-            RedfieldItems = false,
-            BombChipEsp = false,
-            BombChipItems = false,
-            AntiAfk = false,
-            AutoClick = false,
-            NoRender = false
-        }
+local Library = {
+    Enabled = true,
+    Config = {
+        RainbowAccent = false,
+        MenuKey = Enum.KeyCode.Insert
+    },
+    Flags = {
+        Esp = false,
+        Aimbot = false,
+        Speed = false,
+        Jump = false,
+        Fly = false,
+        GamepassFaker = false,
+        InfiniteJump = false,
+        Noclip = false,
+        Fullbright = false,
+        Mm2Esp = false,
+        Mm2Sheriff = false,
+        Mm2Murderer = false,
+        BlindShotEsp = false,
+        BlindShotAimbot = false,
+        RedfieldEsp = false,
+        RedfieldItems = false,
+        BombChipEsp = false,
+        BombChipItems = false,
+        AntiAfk = false,
+        AutoClick = false,
+        NoRender = false
     }
+}
 
 
 -- Gamepass Spoofing Logic
@@ -309,7 +312,20 @@ local function GetClosest()
 end
 
 RunService.RenderStepped:Connect(function()
-        if Library.Flags.Aimbot or Library.Flags.BlindShotAimbot then
+        -- Rainbow Accent Logic
+    if Library.Flags.RainbowAccent then
+        local hue = tick() % 5 / 5
+        local color = Color3.fromHSV(hue, 0.8, 1)
+        UIStroke.Color = color
+        MobileBtn.TextColor3 = color
+        for _, b in pairs(TabButtons:GetChildren()) do
+            if b:IsA("TextButton") and b.Text == CurrentTab then
+                b.TextColor3 = color
+            end
+        end
+    end
+
+    if Library.Flags.Aimbot or Library.Flags.BlindShotAimbot then
         local t = GetClosest()
         if t then Camera.CFrame = CFrame.new(Camera.CFrame.Position, t.Character.Head.Position) end
     end
@@ -472,6 +488,7 @@ CreateTab("MM2")
 CreateTab("Blind Shot")
 CreateTab("Redfield")
 CreateTab("Bomb Chip")
+CreateTab("Settings")
 CreateTab("Credits")
 
 CreateToggle("Global ESP", "Esp", "Main")
@@ -497,6 +514,32 @@ CreateToggle("Highlight Key Items", "RedfieldItems", "Redfield")
 
 CreateToggle("Player ESP", "BombChipEsp", "Bomb Chip")
 CreateToggle("Highlight Chips/Bombs", "BombChipItems", "Bomb Chip")
+
+-- Settings Tab Logic
+local function CreateButton(name, callback, parentTab)
+    local parent = Tabs[parentTab or "Settings"]
+    local Btn = Instance.new("TextButton")
+    Btn.Size = UDim2.new(1, -10, 0, 40)
+    Btn.BackgroundColor3 = Theme.Secondary
+    Btn.Text = name
+    Btn.Font = Enum.Font.GothamMedium
+    Btn.TextColor3 = Theme.Text
+    Btn.TextSize = 14
+    Btn.Parent = parent
+    
+    local Corner = Instance.new("UICorner")
+    Corner.CornerRadius = UDim.new(0, 6)
+    Corner.Parent = Btn
+    
+    Btn.MouseButton1Click:Connect(callback)
+end
+
+CreateToggle("Rainbow Accent", "RainbowAccent", "Settings")
+CreateButton("Destroy UI", function() ScreenGui:Destroy() end, "Settings")
+CreateButton("Reset Config", function()
+    for k, v in pairs(Library.Flags) do Library.Flags[k] = false end
+    print("Config Reset")
+end, "Settings")
 
 local CreditsLabel = Instance.new("TextLabel")
 CreditsLabel.Size = UDim2.new(1, -20, 0, 100)
