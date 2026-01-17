@@ -1,122 +1,166 @@
-# GTA-1-Real-HTML
+# Professional Transparent Luau Menu
 
-A GTA 1-style top-down shooter game built with HTML5, CSS3, and JavaScript. Features two detailed maps, enemy AI, and classic arcade-style gameplay.
+Профессиональная система меню для Roblox с полупрозрачным дизайном и плавными анимациями.
 
-## Features
+## Возможности
 
-### 🗺️ Two Detailed Maps
+- Полупрозрачный фон с эффектом размытия
+- Плавные анимации появления и исчезновения
+- Hover эффекты на кнопках
+- Градиентные цвета и свечение
+- Современный UI дизайн
+- 6 предустановленных кнопок меню
+- Полностью настраиваемая конфигурация
 
-#### Map 1: City Street
-- Detailed urban environment with buildings of various sizes
-- Roads with lane markings and crosswalks
-- Trees, streetlamps, and benches
-- Parked cars scattered around the map
-- Boxes and containers for tactical cover
-- Road cracks and realistic details
+## Установка в Roblox Studio
 
-#### Map 2: Sandstone (Industrial)
-- Industrial-themed environment inspired by Standoff 2
-- Concrete structures with realistic textures
-- Metal buildings (garages, hangars)
-- Steel platforms and stairs
-- Shipping containers and crates
-- Pipes and technical elements
-- Rooftop structures
+### Вариант 1: LocalScript
 
-### 🎮 Gameplay Features
+1. Откройте Roblox Studio
+2. Создайте новый LocalScript в StarterPlayer > StarterPlayerScripts
+3. Скопируйте содержимое MainMenu.lua в этот скрипт
+4. Добавьте в конец скрипта:
 
-- **Player Controls**: WASD or Arrow keys for movement, Mouse for aiming
-- **Combat System**: Space bar to shoot, ammo management
-- **Enemy AI**: Enemies patrol, detect player, and engage in combat
-- **Health System**: Visual health bar with damage feedback
-- **Score System**: Earn money by defeating enemies and collecting pickups
-- **Collision Detection**: Realistic collisions with buildings, walls, and obstacles
-- **Camera System**: Smooth camera that follows the player
-- **Map Boundaries**: Players and enemies cannot leave the map
-
-### 🎯 Game Mechanics
-
-- **Pickups**: Collect money, ammo, and health packs
-- **Enemy Behavior**: 
-  - Patrol when player is far away
-  - Chase and shoot when player is detected
-  - Intelligent movement avoiding obstacles
-- **Bullet Physics**: Fast-moving projectiles with lifetime
-- **Damage System**: Different damage values for hits
-- **Game Over**: Death screen with final score display
-
-### 🎨 Visual Features
-
-- Detailed map rendering with multiple object types
-- Health bars for both player and enemies
-- Smooth animations and rotations
-- Particle effects (light halos from lamps)
-- Textured buildings and obstacles
-- Color-coded bullets (yellow for player, orange for enemies)
-
-## How to Play
-
-1. Open `index.html` in a modern web browser
-2. Select your preferred map from the dropdown menu
-3. Click "Начать игру" (Start Game)
-4. Use **WASD** or **Arrow Keys** to move
-5. Move your **mouse** to aim
-6. Press **Space** or **Click** to shoot
-7. Survive, defeat enemies, and collect pickups to increase your score!
-
-## Controls
-
-- **W / ↑**: Move up
-- **S / ↓**: Move down
-- **A / ←**: Move left
-- **D / →**: Move right
-- **Mouse**: Aim direction
-- **Space / Click**: Shoot
-- **Pause Button**: Pause/Resume game
-
-## Installation
-
-No installation required! Simply:
-
-1. Clone this repository
-2. Open `index.html` in your browser
-3. Start playing!
-
-Or use a local server:
-```bash
-python3 -m http.server 8080
-# Then open http://localhost:8080 in your browser
+```lua
+local MenuModule = require(script)
+MenuModule:CreateMenu()
 ```
 
-## Technical Details
+### Вариант 2: ModuleScript
 
-- **HTML5 Canvas** for rendering
-- **Vanilla JavaScript** (no frameworks)
-- **CSS3** for UI styling
-- **Responsive design** adapts to window size
-- **Optimized rendering** for smooth 60 FPS gameplay
+1. Создайте ModuleScript в ReplicatedStorage
+2. Назовите его "MenuModule"
+3. Вставьте код из MainMenu.lua
+4. В LocalScript используйте:
 
-## Game Statistics
+```lua
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local MenuModule = require(ReplicatedStorage.MenuModule)
 
-- **2 Unique Maps**: City and Sandstone
-- **6 Enemy Spawn Points** per map
-- **3 Types of Pickups**: Money, Ammo, Health
-- **100 HP** starting health
-- **30 Rounds** starting ammo
-- **Multiple Obstacle Types** per map (10+ different types)
+-- Создать меню
+MenuModule:CreateMenu()
 
-## Browser Compatibility
+-- Или переключить меню (открыть/закрыть)
+MenuModule:ToggleMenu()
+```
 
-Works best on modern browsers:
-- ✅ Chrome/Edge (Recommended)
-- ✅ Firefox
-- ✅ Safari
-- ✅ Opera
+## Использование
 
-## Credits
+### Открыть меню
+```lua
+MenuModule:CreateMenu()
+```
 
-Inspired by the classic GTA 1 top-down gameplay and Standoff 2's Sandstone map design.
+### Закрыть меню
+```lua
+MenuModule:CloseMenu()
+```
 
-## License
+### Переключить меню (toggle)
+```lua
+MenuModule:ToggleMenu()
+```
 
-See LICENSE file for details.
+### Привязать к клавише (например, ESC)
+```lua
+local UserInputService = game:GetService("UserInputService")
+
+UserInputService.InputBegan:Connect(function(input, gameProcessed)
+    if not gameProcessed and input.KeyCode == Enum.KeyCode.Escape then
+        MenuModule:ToggleMenu()
+    end
+end)
+```
+
+## Настройка
+
+Измените параметры в таблице `MENU_CONFIG`:
+
+```lua
+local MENU_CONFIG = {
+    BackgroundColor = Color3.fromRGB(20, 20, 25),      -- Цвет фона
+    BackgroundTransparency = 0.3,                       -- Прозрачность фона
+    BorderColor = Color3.fromRGB(100, 200, 255),       -- Цвет границы
+    ButtonColor = Color3.fromRGB(40, 40, 50),          -- Цвет кнопок
+    ButtonHoverColor = Color3.fromRGB(60, 120, 200),   -- Цвет при наведении
+    TextColor = Color3.fromRGB(255, 255, 255),         -- Цвет текста
+    AccentColor = Color3.fromRGB(100, 200, 255),       -- Акцентный цвет
+    AnimationSpeed = 0.3,                               -- Скорость анимаций
+    BlurSize = 24,                                      -- Размер размытия
+}
+```
+
+## Кнопки
+
+По умолчанию доступны 6 кнопок:
+- Play Game - Начать игру
+- Settings - Настройки
+- Inventory - Инвентарь
+- Shop - Магазин
+- Leaderboard - Таблица лидеров
+- Exit - Выход (закрывает меню)
+
+### Добавить свою кнопку
+
+Добавьте в массив `buttons`:
+
+```lua
+{Text = "Custom Button", Icon = "🎮", Color = Color3.fromRGB(255, 100, 200)}
+```
+
+### Обработать нажатие кнопки
+
+Измените функцию `OnButtonClick`:
+
+```lua
+function MenuModule:OnButtonClick(button, buttonName)
+    -- Ваш код
+
+    if buttonName == "Play Game" then
+        -- Начать игру
+        game:GetService("ReplicatedStorage").StartGame:FireServer()
+    elseif buttonName == "Settings" then
+        -- Открыть настройки
+    end
+end
+```
+
+## Технические детали
+
+- Использует TweenService для плавных анимаций
+- Эффект размытия через Lighting.BlurEffect
+- Адаптивные UICorner и UIStroke для современного вида
+- UIGradient для градиентного текста
+- Автоматические анимации появления кнопок
+
+## Совместимость
+
+- Roblox Studio
+- Luau (Lua 5.1 compatible)
+- Все платформы (PC, Mobile, Console)
+
+## Пример полного скрипта
+
+```lua
+-- LocalScript в StarterPlayer > StarterPlayerScripts
+
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local UserInputService = game:GetService("UserInputService")
+
+-- Вставьте сюда весь код из MainMenu.lua
+-- ... (код MenuModule) ...
+
+-- Создать меню при загрузке
+MenuModule:CreateMenu()
+
+-- Переключение по клавише ESC
+UserInputService.InputBegan:Connect(function(input, gameProcessed)
+    if not gameProcessed and input.KeyCode == Enum.KeyCode.Escape then
+        MenuModule:ToggleMenu()
+    end
+end)
+```
+
+## Лицензия
+
+MIT License - свободно используйте в своих проектах!
