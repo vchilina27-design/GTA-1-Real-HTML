@@ -39,7 +39,9 @@ local Library = {
         Mm2Sheriff = false,
         Mm2Murderer = false,
         BlindShotEsp = false,
-        BlindShotAimbot = false
+        BlindShotAimbot = false,
+        RedfieldEsp = false,
+        RedfieldItems = false
     }
 }
 
@@ -352,6 +354,24 @@ RunService.RenderStepped:Connect(function()
                 h.OutlineTransparency = 0
                 h.FillTransparency = 0.2
             end
+
+            -- Redfield Elementary Specific Logic
+            if Library.Flags.RedfieldEsp then
+                h.Enabled = true
+                h.FillColor = Color3.fromRGB(255, 255, 0) -- Yellow for better visibility in school
+            end
+        end
+    end
+    
+    if Library.Flags.RedfieldItems then
+        for _, item in pairs(workspace:GetDescendants()) do
+            if item:IsA("BasePart") and (item.Name:lower():find("key") or item.Name:lower():find("card") or item.Name:lower():find("item")) then
+                local h = item:FindFirstChild("ItemHighlight") or Instance.new("Highlight", item)
+                h.Name = "ItemHighlight"
+                h.FillColor = Color3.fromRGB(0, 255, 0)
+                h.OutlineColor = Color3.fromRGB(255, 255, 255)
+                h.Enabled = true
+            end
         end
     end
 end)
@@ -391,6 +411,7 @@ end)
 CreateTab("Main")
 CreateTab("MM2")
 CreateTab("Blind Shot")
+CreateTab("Redfield")
 CreateTab("Credits")
 
 CreateToggle("Global ESP", "Esp", "Main")
@@ -407,6 +428,9 @@ CreateToggle("MM2 Role ESP", "Mm2Esp", "MM2")
 
 CreateToggle("Enable ESP", "BlindShotEsp", "Blind Shot")
 CreateToggle("Aimbot Lock", "BlindShotAimbot", "Blind Shot")
+
+CreateToggle("Student/Teacher ESP", "RedfieldEsp", "Redfield")
+CreateToggle("Highlight Key Items", "RedfieldItems", "Redfield")
 
 local CreditsLabel = Instance.new("TextLabel")
 CreditsLabel.Size = UDim2.new(1, -20, 0, 100)
