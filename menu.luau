@@ -379,10 +379,31 @@ RunService.RenderStepped:Connect(function()
 
     -- Bomb Chip Specific Logic (Enhanced)
     if Library.Flags.BombChipItems or Library.Flags.BombChipEsp then
+        -- Specific path logic from user findings
+        local gameCells = workspace:FindFirstChild("gameCells")
+        if gameCells then
+            for _, cellGroup in pairs(gameCells:GetChildren()) do
+                local cells = cellGroup:FindFirstChild("Cells")
+                if cells then
+                    for _, cell in pairs(cells:GetChildren()) do
+                        for _, obj in pairs(cell:GetChildren()) do
+                            if obj.Name:lower():find("chip") or obj:FindFirstChild("chip") then
+                                local target = obj:FindFirstChild("chip") or obj
+                                local h = target:FindFirstChild("BombHighlight") or Instance.new("Highlight", target)
+                                h.Name = "BombHighlight"
+                                h.FillColor = Color3.fromRGB(255, 0, 255)
+                                h.OutlineColor = Color3.fromRGB(255, 255, 255)
+                                h.Enabled = Library.Flags.BombChipItems
+                            end
+                        end
+                    end
+                end
+            end
+        end
+
+        -- General fallback search
         for _, item in pairs(workspace:GetDescendants()) do
-            -- Look for parts, folders or models that might contain "chip" or "bomb" in their name
             local name = item.Name:lower()
-            -- Broadened search for "chip" related structures based on Dex information
             local isTarget = name:find("chip") or name:find("bomb") or name:find("point") or name:find("objective") or name:find("collect")
             
             if isTarget and (item:IsA("BasePart") or item:IsA("Model") or item:IsA("MeshPart") or item:IsA("UnionOperation")) then
@@ -392,7 +413,6 @@ RunService.RenderStepped:Connect(function()
                 h.OutlineColor = Color3.fromRGB(255, 255, 255)
                 h.Enabled = Library.Flags.BombChipItems
                 
-                -- Support for models without highlights
                 if item:IsA("Model") then
                     h.Adornee = item
                 end
