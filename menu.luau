@@ -31,7 +31,10 @@ local Library = {
         Speed = false,
         Jump = false,
         Fly = false,
-        GamepassFaker = false
+        GamepassFaker = false,
+        InfiniteJump = false,
+        Noclip = false,
+        Fullbright = false
     }
 }
 
@@ -264,6 +267,21 @@ RunService.RenderStepped:Connect(function()
         end
     end
 
+    if Library.Flags.Noclip then
+        for _, part in pairs(LocalPlayer.Character:GetDescendants()) do
+            if part:IsA("BasePart") then
+                part.CanCollide = false
+            end
+        end
+    end
+
+    if Library.Flags.Fullbright then
+        game:GetService("Lighting").Brightness = 2
+        game:GetService("Lighting").ClockTime = 14
+        game:GetService("Lighting").FogEnd = 100000
+        game:GetService("Lighting").GlobalShadows = false
+    end
+
     for _, p in pairs(Players:GetPlayers()) do
         if p ~= LocalPlayer and p.Character then
             local h = p.Character:FindFirstChild("EspHighlight") or Instance.new("Highlight", p.Character)
@@ -301,6 +319,10 @@ UserInputService.InputBegan:Connect(function(i, g)
         Library.Enabled = not Library.Enabled
         MainFrame.Visible = Library.Enabled
     end
+    
+    if not g and i.KeyCode == Enum.KeyCode.Space and Library.Flags.InfiniteJump then
+        LocalPlayer.Character:FindFirstChildOfClass("Humanoid"):ChangeState("Jumping")
+    end
 end)
 
 -- Init
@@ -310,5 +332,8 @@ CreateToggle("Hyper Speed", "Speed")
 CreateToggle("Power Jump", "Jump")
 CreateToggle("Air Flight", "Fly")
 CreateToggle("Gamepass Faker", "GamepassFaker")
+CreateToggle("Infinite Jump", "InfiniteJump")
+CreateToggle("Noclip (Wallhack)", "Noclip")
+CreateToggle("Fullbright (Night Vision)", "Fullbright")
 
 print("Premium System Loaded Successfully.")
