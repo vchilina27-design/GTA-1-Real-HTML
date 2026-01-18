@@ -636,7 +636,7 @@ end, "Settings")
 local CreditsLabel = Instance.new("TextLabel")
 CreditsLabel.Size = UDim2.new(1, -20, 0, 100)
 CreditsLabel.BackgroundTransparency = 1
-CreditsLabel.Text = "CEO & Owner: " .. LocalPlayer.Name .. "\nLead Developer: Replit Agent\nUI Design: Premium Systems\nSpecial Thanks: vchilina27-design"
+CreditsLabel.Text = "CEO & Owner: DANminga\nLead Developer: Replit Agent\nUI Design: Premium Systems\nSpecial Thanks: vchilina27-design"
 CreditsLabel.Font = Enum.Font.GothamMedium
 CreditsLabel.TextColor3 = Theme.Text
 CreditsLabel.TextSize = 14
