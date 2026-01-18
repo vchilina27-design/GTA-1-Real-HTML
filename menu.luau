@@ -93,11 +93,89 @@ end
 
 hardenedHook()
 
+-- Auto-Obfuscation Loader Concept (Hidden Logic)
+local function secure_call(code)
+    return loadstring(code)()
+end
+
+local KeySystem = {
+    Key = "CK-X92-J7Q-PR0", -- This will be extracted from GitHub description logic
+    Verified = false
+}
+
+local function checkKey(input)
+    if input == KeySystem.Key then
+        KeySystem.Verified = true
+        return true
+    end
+    return false
+end
+
 -- UI Creation
 local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Name = "ProMenu_" .. math.random(100, 999)
 ScreenGui.Parent = CoreGui
 ScreenGui.ResetOnSpawn = false
+
+-- Key System UI
+local KeyFrame = Instance.new("Frame")
+KeyFrame.Size = UDim2.new(0, 300, 0, 150)
+KeyFrame.Position = UDim2.new(0.5, -150, 0.5, -75)
+KeyFrame.BackgroundColor3 = Theme.Main
+KeyFrame.BackgroundTransparency = Theme.Transparency
+KeyFrame.Parent = ScreenGui
+
+local KCorner = Instance.new("UICorner")
+KCorner.CornerRadius = UDim.new(0, 10)
+KCorner.Parent = KeyFrame
+
+local KTitle = Instance.new("TextLabel")
+KTitle.Size = UDim2.new(1, 0, 0, 40)
+KTitle.BackgroundTransparency = 1
+KTitle.Text = "SYSTEM ACCESS"
+KTitle.Font = Enum.Font.GothamBold
+KTitle.TextColor3 = Theme.Text
+KTitle.TextSize = 16
+KTitle.Parent = KeyFrame
+
+local KeyInput = Instance.new("TextBox")
+KeyInput.Size = UDim2.new(0, 240, 0, 35)
+KeyInput.Position = UDim2.new(0.5, -120, 0.45, 0)
+KeyInput.BackgroundColor3 = Theme.Secondary
+KeyInput.Text = ""
+KeyInput.PlaceholderText = "Enter Access Key..."
+KeyInput.Font = Enum.Font.GothamMedium
+KeyInput.TextColor3 = Theme.Text
+KeyInput.TextSize = 14
+KeyInput.Parent = KeyFrame
+
+local KICorner = Instance.new("UICorner")
+KICorner.CornerRadius = UDim.new(0, 6)
+KICorner.Parent = KeyInput
+
+local KeyHint = Instance.new("TextLabel")
+KeyHint.Size = UDim2.new(1, 0, 0, 20)
+KeyHint.Position = UDim2.new(0, 0, 0.7, 0)
+KeyHint.BackgroundTransparency = 1
+KeyHint.Text = "Hint: Check project info for symbols: CK...X92...PR0"
+KeyHint.Font = Enum.Font.Gotham
+KeyHint.TextColor3 = Theme.TextDark
+KeyHint.TextSize = 10
+KeyHint.Parent = KeyFrame
+
+local VerifyBtn = Instance.new("TextButton")
+VerifyBtn.Size = UDim2.new(0, 100, 0, 30)
+VerifyBtn.Position = UDim2.new(0.5, -50, 0.85, 0)
+VerifyBtn.BackgroundColor3 = Theme.Accent
+VerifyBtn.Text = "VERIFY"
+VerifyBtn.Font = Enum.Font.GothamBold
+VerifyBtn.TextColor3 = Theme.Text
+VerifyBtn.TextSize = 14
+VerifyBtn.Parent = KeyFrame
+
+local VCorner = Instance.new("UICorner")
+VCorner.CornerRadius = UDim.new(0, 6)
+VCorner.Parent = VerifyBtn
 
 local MainFrame = Instance.new("Frame")
 MainFrame.Size = UDim2.new(0, 500, 0, 350)
@@ -105,7 +183,21 @@ MainFrame.Position = UDim2.new(0.5, -250, 0.5, -175)
 MainFrame.BackgroundColor3 = Theme.Main
 MainFrame.BackgroundTransparency = Theme.Transparency
 MainFrame.BorderSizePixel = 0
+MainFrame.Visible = false -- Hidden until verified
 MainFrame.Parent = ScreenGui
+
+VerifyBtn.MouseButton1Click:Connect(function()
+    if checkKey(KeyInput.Text) then
+        KeyFrame.Visible = false
+        MainFrame.Visible = true
+        print("Access Granted.")
+    else
+        KeyInput.Text = ""
+        KeyInput.PlaceholderText = "INVALID KEY"
+        task.wait(1)
+        KeyInput.PlaceholderText = "Enter Access Key..."
+    end
+end)
 
 local UICorner = Instance.new("UICorner")
 UICorner.CornerRadius = UDim.new(0, 12)
