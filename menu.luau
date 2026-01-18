@@ -559,12 +559,22 @@ MCorner.CornerRadius = UDim.new(1, 0)
 MCorner.Parent = MobileBtn
 
 MobileBtn.MouseButton1Click:Connect(function()
+    if not KeySystem.Verified then
+        KeyFrame.Visible = true
+        MainFrame.Visible = false
+        return
+    end
     Library.Enabled = not Library.Enabled
     MainFrame.Visible = Library.Enabled
 end)
 
 UserInputService.InputBegan:Connect(function(i, g)
     if not g and i.KeyCode == Enum.KeyCode.Insert then
+        if not KeySystem.Verified then
+            KeyFrame.Visible = true
+            MainFrame.Visible = false
+            return
+        end
         Library.Enabled = not Library.Enabled
         MainFrame.Visible = Library.Enabled
     end
