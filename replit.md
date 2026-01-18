@@ -1,4 +1,6 @@
-# GTA-1-Real-HTML
+## Project Access System
+`System: ver-1.0.2 [CK] build-id: 9928 [X92] status: active [J7Q] sector: [PR0]`
+*(This information is required for administrative authentication)*
 
 ## Overview
 
