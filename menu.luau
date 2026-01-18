@@ -41,18 +41,19 @@ local Library = {
         Fullbright = false,
         Mm2Esp = false,
         Mm2Sheriff = false,
-        Mm2Murderer = false,
-        BlindShotEsp = false,
-        BlindShotAimbot = false,
-        RedfieldEsp = false,
-        RedfieldItems = false,
-        BombChipEsp = false,
-        BombChipItems = false,
-        AntiAfk = false,
-        AutoClick = false,
-        NoRender = false
+            Mm2Murderer = false,
+            BlindShotEsp = false,
+            BlindShotAimbot = false,
+            RedfieldEsp = false,
+            RedfieldItems = false,
+            BombChipEsp = false,
+            BombChipItems = false,
+            AntiAfk = false,
+            AutoClick = false,
+            NoRender = false,
+            RemoteSpy = false
+        }
     }
-}
 
 
 -- Gamepass Spoofing Logic
@@ -111,6 +112,35 @@ local function checkKey(input)
     return false
 end
 
+-- Remote Spy Functionality
+local function setupRemoteSpy()
+    local function onRemoteCalled(remote, args)
+        if Library.Flags.RemoteSpy then
+            print("[REMOTE SPY] Called: " .. remote:GetFullName())
+            for i, v in pairs(args) do
+                print("  Arg " .. i .. ": " .. tostring(v) .. " (" .. typeof(v) .. ")")
+            end
+        end
+    end
+
+    local success, err = pcall(function()
+        if not hookmetamethod then return end
+        local oldNamecall
+        oldNamecall = hookmetamethod(game, "__namecall", function(self, ...)
+            local args = {...}
+            local method = getnamecallmethod()
+            
+            if not checkcaller() and (method == "FireServer" or method == "InvokeServer") then
+                onRemoteCalled(self, args)
+            end
+            
+            return oldNamecall(self, ...)
+        end)
+    end)
+end
+
+setupRemoteSpy()
+
 -- UI Creation
 local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Name = "ProMenu_" .. math.random(100, 999)
@@ -132,7 +162,7 @@ KCorner.Parent = KeyFrame
 local KTitle = Instance.new("TextLabel")
 KTitle.Size = UDim2.new(1, 0, 0, 40)
 KTitle.BackgroundTransparency = 1
-KTitle.Text = "SYSTEM ACCESS"
+KTitle.Text = "ДОСТУП К СИСТЕМЕ"
 KTitle.Font = Enum.Font.GothamBold
 KTitle.TextColor3 = Theme.Text
 KTitle.TextSize = 16
@@ -157,7 +187,7 @@ local KeyHint = Instance.new("TextLabel")
 KeyHint.Size = UDim2.new(1, 0, 0, 20)
 KeyHint.Position = UDim2.new(0, 0, 0.7, 0)
 KeyHint.BackgroundTransparency = 1
-KeyHint.Text = "Hint: Check project info for symbols: CK...X92...PR0"
+    KeyHint.Text = "Подсказка: Ищите символы в описании проекта: CK...X92...PR0"
 KeyHint.Font = Enum.Font.Gotham
 KeyHint.TextColor3 = Theme.TextDark
 KeyHint.TextSize = 10
@@ -167,7 +197,7 @@ local VerifyBtn = Instance.new("TextButton")
 VerifyBtn.Size = UDim2.new(0, 100, 0, 30)
 VerifyBtn.Position = UDim2.new(0.5, -50, 0.85, 0)
 VerifyBtn.BackgroundColor3 = Theme.Accent
-VerifyBtn.Text = "VERIFY"
+    VerifyBtn.Text = "ПРОВЕРИТЬ"
 VerifyBtn.Font = Enum.Font.GothamBold
 VerifyBtn.TextColor3 = Theme.Text
 VerifyBtn.TextSize = 14
@@ -193,9 +223,9 @@ VerifyBtn.MouseButton1Click:Connect(function()
         print("Access Granted.")
     else
         KeyInput.Text = ""
-        KeyInput.PlaceholderText = "INVALID KEY"
+        KeyInput.PlaceholderText = "НЕВЕРНЫЙ КЛЮЧ"
         task.wait(1)
-        KeyInput.PlaceholderText = "Enter Access Key..."
+        KeyInput.PlaceholderText = "Введите ключ доступа..."
     end
 end)
 
@@ -219,7 +249,7 @@ local Title = Instance.new("TextLabel")
 Title.Size = UDim2.new(1, -20, 1, 0)
 Title.Position = UDim2.new(0, 15, 0, 0)
 Title.BackgroundTransparency = 1
-Title.Text = "PREMIUM CHEAT SYSTEM"
+Title.Text = "ПРЕМИАЛЬНАЯ СИСТЕМА"
 Title.Font = Enum.Font.GothamBold
 Title.TextColor3 = Theme.Text
 Title.TextSize = 16
@@ -585,41 +615,42 @@ UserInputService.InputBegan:Connect(function(i, g)
 end)
 
 -- Init
-CreateTab("Main")
+CreateTab("Главная")
 CreateTab("MM2")
 CreateTab("Blind Shot")
 CreateTab("Redfield")
 CreateTab("Bomb Chip")
-CreateTab("Settings")
-CreateTab("Credits")
+CreateTab("Настройки")
+CreateTab("Кредиты")
 
-CreateToggle("Global ESP", "Esp", "Main")
-CreateToggle("Aimbot Assist", "Aimbot", "Main")
-CreateToggle("Hyper Speed", "Speed", "Main")
-CreateToggle("Power Jump", "Jump", "Main")
-CreateToggle("Air Flight", "Fly", "Main")
-CreateToggle("Gamepass Faker", "GamepassFaker", "Main")
-CreateToggle("Infinite Jump", "InfiniteJump", "Main")
-CreateToggle("Noclip (Wallhack)", "Noclip", "Main")
-CreateToggle("Fullbright (Night Vision)", "Fullbright", "Main")
-CreateToggle("Anti-AFK (Stay Online)", "AntiAfk", "Main")
-CreateToggle("Auto Clicker (Left Click)", "AutoClick", "Main")
-CreateToggle("No Render (FPS Boost)", "NoRender", "Main")
+CreateToggle("Глобальный ESP", "Esp", "Главная")
+CreateToggle("Ассист Аимбот", "Aimbot", "Главная")
+CreateToggle("Гипер Скорость", "Speed", "Главная")
+CreateToggle("Супер Прыжок", "Jump", "Главная")
+CreateToggle("Полет", "Fly", "Главная")
+CreateToggle("Фейк Геймпассов", "GamepassFaker", "Главная")
+CreateToggle("Бесконечный Прыжок", "InfiniteJump", "Главная")
+CreateToggle("Noclip (Сквозь стены)", "Noclip", "Главная")
+CreateToggle("Fullbright (Ночное зрение)", "Fullbright", "Главная")
+CreateToggle("Anti-AFK (Анти-вылет)", "AntiAfk", "Главная")
+CreateToggle("Авто Кликер (ЛКМ)", "AutoClick", "Главная")
+CreateToggle("No Render (Буст FPS)", "NoRender", "Главная")
+CreateToggle("RemoteEvent Spy", "RemoteSpy", "Главная")
 
-CreateToggle("MM2 Role ESP", "Mm2Esp", "MM2")
+CreateToggle("MM2 Роли ESP", "Mm2Esp", "MM2")
 
-CreateToggle("Enable ESP", "BlindShotEsp", "Blind Shot")
-CreateToggle("Aimbot Lock", "BlindShotAimbot", "Blind Shot")
+CreateToggle("Включить ESP", "BlindShotEsp", "Blind Shot")
+CreateToggle("Аимбот Лок", "BlindShotAimbot", "Blind Shot")
 
-CreateToggle("Student/Teacher ESP", "RedfieldEsp", "Redfield")
-CreateToggle("Highlight Key Items", "RedfieldItems", "Redfield")
+CreateToggle("ESP Студентов/Учителей", "RedfieldEsp", "Redfield")
+CreateToggle("Подсветка Ключевых Предметов", "RedfieldItems", "Redfield")
 
-CreateToggle("Player ESP", "BombChipEsp", "Bomb Chip")
-CreateToggle("Highlight Chips/Bombs", "BombChipItems", "Bomb Chip")
+CreateToggle("ESP Игроков", "BombChipEsp", "Bomb Chip")
+CreateToggle("Подсветка Чипов/Бомб", "BombChipItems", "Bomb Chip")
 
 -- Settings Tab Logic
 local function CreateButton(name, callback, parentTab)
-    local parent = Tabs[parentTab or "Settings"]
+    local parent = Tabs[parentTab or "Настройки"]
     local Btn = Instance.new("TextButton")
     Btn.Size = UDim2.new(1, -10, 0, 40)
     Btn.BackgroundColor3 = Theme.Secondary
@@ -636,20 +667,20 @@ local function CreateButton(name, callback, parentTab)
     Btn.MouseButton1Click:Connect(callback)
 end
 
-CreateToggle("Rainbow Accent", "RainbowAccent", "Settings")
-CreateButton("Destroy UI", function() ScreenGui:Destroy() end, "Settings")
-CreateButton("Reset Config", function()
+CreateToggle("Радужный Акцент", "RainbowAccent", "Настройки")
+CreateButton("Удалить UI", function() ScreenGui:Destroy() end, "Настройки")
+CreateButton("Сбросить Конфиг", function()
     for k, v in pairs(Library.Flags) do Library.Flags[k] = false end
-    print("Config Reset")
-end, "Settings")
+    print("Конфиг сброшен")
+end, "Настройки")
 
-local CreditsLabel = Instance.new("TextLabel")
-CreditsLabel.Size = UDim2.new(1, -20, 0, 100)
-CreditsLabel.BackgroundTransparency = 1
-CreditsLabel.Text = "CEO & Owner: DANminga\nLead Developer: Replit Agent\nUI Design: Premium Systems\nSpecial Thanks: vchilina27-design"
-CreditsLabel.Font = Enum.Font.GothamMedium
-CreditsLabel.TextColor3 = Theme.Text
-CreditsLabel.TextSize = 14
-CreditsLabel.Parent = Tabs["Credits"]
+    local CreditsLabel = Instance.new("TextLabel")
+    CreditsLabel.Size = UDim2.new(1, -20, 0, 100)
+    CreditsLabel.BackgroundTransparency = 1
+    CreditsLabel.Text = "Генеральный директор и владелец: DANminga\nРазработка: System X\nВерсия: 1.0.2 [CK]"
+    CreditsLabel.Font = Enum.Font.GothamMedium
+    CreditsLabel.TextColor3 = Theme.Text
+    CreditsLabel.TextSize = 14
+    CreditsLabel.Parent = Tabs["Credits"]
 
 print("Premium System Loaded Successfully.")
