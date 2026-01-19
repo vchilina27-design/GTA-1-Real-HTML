@@ -10034,6 +10034,6 @@ end, "Настройки")
     CreditsLabel.Font = Enum.Font.GothamMedium
     CreditsLabel.TextColor3 = Theme.Text
     CreditsLabel.TextSize = 14
-    CreditsLabel.Parent = Tabs["Credits"]
+    CreditsLabel.Parent = Tabs["Кредиты"]
 
 print("Premium System Loaded Successfully.")
