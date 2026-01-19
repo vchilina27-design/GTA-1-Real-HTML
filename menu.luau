@@ -10029,11 +10029,18 @@ end, "Настройки")
 
     local CreditsLabel = Instance.new("TextLabel")
     CreditsLabel.Size = UDim2.new(1, -20, 0, 100)
+    CreditsLabel.Position = UDim2.new(0, 10, 0, 10)
     CreditsLabel.BackgroundTransparency = 1
     CreditsLabel.Text = "AETERNA SYSTEMS | Глобальное Подразделение Безопасности\nГенеральный директор и владелец: DANminga\nРазработка: Отдел кибербезопасности Aeterna\nЛицензия: Корпоративная (Premium)\nВерсия: 2.1.0 [GOLD]"
     CreditsLabel.Font = Enum.Font.GothamMedium
     CreditsLabel.TextColor3 = Theme.Text
     CreditsLabel.TextSize = 14
+    CreditsLabel.TextWrapped = true
     CreditsLabel.Parent = Tabs["Кредиты"]
+
+    -- Layout fix for Credits tab
+    local CreditsList = Instance.new("UIListLayout")
+    CreditsList.Padding = UDim.new(0, 5)
+    CreditsList.Parent = Tabs["Кредиты"]
 
 print("Premium System Loaded Successfully.")
