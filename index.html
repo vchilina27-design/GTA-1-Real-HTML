@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Driving Game</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="loading">
+        <h1>3D Driving Game</h1>
+        <p>Загрузка...</p>
+    </div>
+
+    <div id="controls-info">
+        <div class="control-item">W / ↑ - Вперед</div>
+        <div class="control-item">S / ↓ - Назад</div>
+        <div class="control-item">A / ← - Влево</div>
+        <div class="control-item">D / → - Вправо</div>
+        <div class="control-item">Пробел - Ручной тормоз</div>
+    </div>
+
+    <div id="speed-meter">
+        <div>Скорость: <span id="speed">0</span> км/ч</div>
+    </div>
+
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"
+        }
+    }
+    </script>
+    <script type="module" src="game.js"></script>
+</body>
+</html>
